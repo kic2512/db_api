@@ -20,7 +20,12 @@ def open_sql(sql):
     cursor = database.cursor()
 
     cursor.execute(sql)
-    result = cursor.fetchall()
+    db_resp = cursor.fetchall()
+
+    result = None
+    if db_resp:
+        columns = [item[0] for item in cursor.description]
+        result = dict(zip(columns, db_resp[0]))
 
     database.close()
     return result
