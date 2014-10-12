@@ -1,0 +1,21 @@
+uwsgi:
+    # указываем socket, при помощи которого будет происходить
+    # взаимодействие между nginx и uwsgi
+    socket: /var/tmp/forum_uwsgi.sock
+    # здесь указываем путь к django-проекту
+    pythonpath: /home/kic/flask_proj
+    module: forum_app.run
+    # путь к лог файлу
+    daemonize: /home/kic/flask_proj/log/uwsgi.log
+    # прочие настройки, значения который можно посмотреть на сайте uWSGI
+    max-requests: 5000
+    buffer-size: 32768
+    harakiri: 30
+    reload-mercy: 8
+    master: 1
+    no-orphans: 1
+    # если выполнить команду "touch <имя ниже указанного файла>",
+    # то произойдет перезапуск uwsgi демона.
+    touch-reload: /home/kic/flask_proj/uwsgi
+    callable: forum
+    env: python

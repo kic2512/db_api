@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head lang="ru">
+    <meta charset="UTF-8">
+    <title>Test</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+    <!--<script>
+        $(document).ready(function(){
+            $('#create').on('click', function(){
+                var msg =  {"name": "ForumName", "short_name": "ForumSN", "user": "nixon@example.com"};
+                $.ajax({
+                    url: 'http://127.0.0.1/db/api/forum/create/',
+                    type: 'POST',
+                    data: JSON.stringify(msg),
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    async: false,
+                    success: function(data) {
+                        alert(data);
+                    }
+                });
+            });
+        });
+    </script>-->
+</head>
+<body>
+
+    <form method="post" action="http://127.0.0.1/db/api/forum/create/" enctype="application/json" datatype="application/json">
+        <div>
+            <input type="submit" tabindex="0">
+        </div>
+    </form>
+
+</body>
+</html>
