@@ -5,8 +5,14 @@
       <w>fwsln</w>
       <w>isanon</w>
       <w>isanonymous</w>
+      <w>isapproved</w>
+      <w>isdeleted</w>
+      <w>isedited</w>
+      <w>ishighlighted</w>
+      <w>isspam</w>
       <w>kravcov</w>
       <w>technopark</w>
+      <w>threadwithsufficientlylargetitle</w>
       <w>trall</w>
     </words>
   </dictionary>

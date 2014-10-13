@@ -2,7 +2,7 @@ __author__ = 'kic'
 
 import flask
 from forum_app.api_packs.db_queries.queries import exec_sql, open_sql
-from forum_app.api_packs.forum_api.forum_func import get_forum_response
+from forum_app.api_packs.make_response.make_response import make_response
 
 
 def create_forum(data):
@@ -19,7 +19,10 @@ def create_forum(data):
             res = open_sql(sql_check)
         else:
             TODO = None
-    resp_dict = get_forum_response(fid=int(res['id']), name=res['name'], short_name=res['short_name'], user=res['user'])
+
+    keys = ['id', 'name', 'short_name', 'user']
+    values = [int(res['id']), res['name'], res['short_name'], res['user']]
+    resp_dict = make_response(keys=keys, values=values)
 
     return flask.jsonify(resp_dict)
 
