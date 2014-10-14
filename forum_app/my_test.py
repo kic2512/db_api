@@ -20,7 +20,7 @@ def user_create():
 
 
 def thread_create():
-    dict = {'forum': 'forum1', 'title': u'ee', 'isClosed': False,
+    dict = {'forum': 'forum3', 'title': u'\u0422\u0440\u0435\u0434 \u0422\u0440\u0438', 'isClosed': False,
             'user': 'example2@mail.ru', 'date': '2013-12-29 00:01:01', 'message': 'hey hey hey!', 'slug': 'thread3',
             'isDeleted': False}
     host = "http://127.0.0.1/db/api/thread/create/"

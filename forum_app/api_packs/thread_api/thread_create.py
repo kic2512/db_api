@@ -1,12 +1,12 @@
 __author__ = 'kic'
 import flask
-from forum_app.api_packs.db_queries.queries import exec_sql, open_sql
+from forum_app.api_packs.db_queries.queries import exec_sql, open_sql, build_sql_query
 from forum_app.api_packs.make_response.make_response import make_response
 
 
 def create_thread(data):
     forum = data['forum']
-    title = data['title']
+    title = data['title'].encode('utf-8')
     isclosed = data['isClosed']
     user = data['user']
     date = data['date']
@@ -23,11 +23,14 @@ def create_thread(data):
     res = open_sql(sql_check)  # check if exists
 
     if not res:
+        sql_scheme = {
+            'columns_names': ['forum', 'title', 'isClosed', 'user', 'date', 'message', 'slug', 'isDeleted'],
+            'columns_values': [str(forum), str(title), str(isclosed), str(user), str(date), str(message),
+                               str(slug), str(isdeleted)],
+            'table': 'Thread',
+            'type': 'insert'}
 
-        sql = "insert into Thread (forum, title, isClosed, user, date, message, slug, isDeleted)" \
-              " values('%s','%s','%d','%s','%s','%s','%s','%d')" % (
-                  forum, title.decode('utf-8'), int(isclosed), user, date, message, slug, int(isdeleted))
-
+        sql = build_sql_query(sql_scheme)
         res = exec_sql(sql)
 
         if res == 0:

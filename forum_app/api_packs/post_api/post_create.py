@@ -56,7 +56,6 @@ def create_post(data):
                                str(ishighlighted), str(isedited), str(isspam), str(isdeleted)],
             'table': 'Post',
             'type': 'insert'}
-        return 'intro'
         sql = build_sql_query(sql_scheme)
         res = exec_sql(sql)
 
@@ -75,4 +74,3 @@ def create_post(data):
     resp_dict = make_response(keys=resp_keys, values=resp_values)
 
     return flask.jsonify(resp_dict)
-
