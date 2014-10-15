@@ -3,10 +3,11 @@ __author__ = 'kic'
 import flask
 from forum_app.api_packs.db_queries.queries import exec_sql, open_sql
 from forum_app.api_packs.make_response.make_response import make_response
-from forum_app.api_packs.db_queries.queries import build_sql_query
+from forum_app.api_packs.db_queries.queries import build_sql_insert_query, build_sql_select_all_query
 
 
 def create_post(data):
+    code = 0
     date = data['date']
     thread = data['thread']
     message = data['message']
@@ -43,26 +44,33 @@ def create_post(data):
     else:
         isdeleted = 'False'
 
-    sql_check = "select * from Post where user = '%s' and date= '%s' " % (user, date)
-    res = open_sql(sql_check)  # check if exists
+    #sql_check = "select * from Post where user = '%s' and date= '%s' " % (user, date)
 
+    sql_scheme = {
+        'columns_names': ['user', 'date'],
+        'columns_values': [user, date],
+        'table': 'Post'
+    }
+
+    sql_check = build_sql_select_all_query(sql_scheme)
+    res = open_sql(sql_check)  # check if exists
     if not res:
         sql_scheme = {
             'columns_names': ['date', 'thread', 'message', 'user', 'forum', 'parent',
                               'isapproved', 'ishighlighted', 'isedited', 'isspam',
                               'isdeleted'],
-            'columns_values': [str(date), str(thread), str(message), str(user), str(forum), str(parent),
-                               str(isapproved),
-                               str(ishighlighted), str(isedited), str(isspam), str(isdeleted)],
-            'table': 'Post',
-            'type': 'insert'}
-        sql = build_sql_query(sql_scheme)
-        res = exec_sql(sql)
+            'columns_values': [date, thread, message, user, forum, parent,
+                               int(isapproved), int(ishighlighted), int(isedited), int(isspam),
+                               int(isdeleted)],
+            'table': 'Post'
+        }
+        sql = build_sql_insert_query(sql_scheme)
+        exec_message = exec_sql(sql)
 
-        if res == 0:
+        if exec_message == 0:
             res = open_sql(sql_check)
         else:
-            TODO = None
+            code = 4
     # return str(res)
 
     resp_keys = ['date', 'forum', 'id', 'isApproved', 'isDeleted', 'isEdited', 'isHighlighted', 'isSpam', 'message',
@@ -71,6 +79,7 @@ def create_post(data):
                    bool(res['isEdited']), bool(res['isHighlighted']), bool(res['isSpam']), res['message'],
                    res['parent'], res['thread'], res['user']]
 
-    resp_dict = make_response(keys=resp_keys, values=resp_values)
+    resp_values = [str(x) for x in resp_values]
+    resp_dict = make_response(resp_keys, resp_values, code)
 
     return flask.jsonify(resp_dict)

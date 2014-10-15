@@ -1,12 +1,14 @@
 __author__ = 'kic'
 import flask
-from forum_app.api_packs.db_queries.queries import exec_sql, open_sql, build_sql_query
+from forum_app.api_packs.db_queries.queries import exec_sql, open_sql, build_sql_insert_query, build_sql_select_all_query
 from forum_app.api_packs.make_response.make_response import make_response
 
 
 def create_thread(data):
+    code = 0
     forum = data['forum']
-    title = data['title'].encode('utf-8')
+    title = data['title']
+
     isclosed = data['isClosed']
     user = data['user']
     date = data['date']
@@ -18,30 +20,33 @@ def create_thread(data):
     else:
         isdeleted = 'False'
 
-    sql_check = "select * from Thread where title = '%s' " % title
+    sql_scheme = {
+        'columns_names': ['title'],
+        'columns_values': [title],
+        'table': 'Thread'
+    }
+
+    sql_check = build_sql_select_all_query(sql_scheme)
 
     res = open_sql(sql_check)  # check if exists
 
     if not res:
         sql_scheme = {
             'columns_names': ['forum', 'title', 'isClosed', 'user', 'date', 'message', 'slug', 'isDeleted'],
-            'columns_values': [str(forum), str(title), str(isclosed), str(user), str(date), str(message),
-                               str(slug), str(isdeleted)],
-            'table': 'Thread',
-            'type': 'insert'}
+            'columns_values': [forum, title, int(isclosed), user, date, message, slug, int(isdeleted)],
+            'table': 'Thread'
+        }
+        sql = build_sql_insert_query(sql_scheme)
+        exec_message = exec_sql(sql)
 
-        sql = build_sql_query(sql_scheme)
-        res = exec_sql(sql)
-
-        if res == 0:
+        if exec_message == 0:
             res = open_sql(sql_check)
         else:
-            TODO = None
-    # return str(res)
+            code = 4
     keys = ['id', 'date', 'forum', 'isClosed', 'isDeleted', 'message', 'slug', 'title', 'user']
-    values = [res['id'], res['date'], res['forum'], bool(res['isClosed']), bool(res['isDeleted']), res['message'],
+    values = [res['id'], str(res['date']), res['forum'], bool(res['isClosed']), bool(res['isDeleted']), res['message'],
               res['slug'], res['title'], res['user']]
 
-    resp_dict = make_response(keys=keys, values=values)
+    resp_dict = make_response(keys, values, code)
 
     return flask.jsonify(resp_dict)
