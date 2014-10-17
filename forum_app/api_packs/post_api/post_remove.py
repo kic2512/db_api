@@ -18,7 +18,7 @@ def remove_post(data):
 
     sql_check = build_sql_select_all_query(sql_scheme)
     res = open_sql(sql_check)
-    if res:
+    if 'isDeleted' in res:
         sql_scheme = {
             'columns_names': ['isDeleted'],
             'columns_values': [1],
@@ -27,8 +27,13 @@ def remove_post(data):
         }
 
         exec_message = exec_sql(build_sql_update_query(sql_scheme))
+
+        sql = " update Thread set posts=posts-1 where id= %s " % res['thread']
+        if res['isDeleted'] != 1:
+            exec_sql(sql)
         if exec_message != 0:
             code = 4
+
     else:
         code = 1
 

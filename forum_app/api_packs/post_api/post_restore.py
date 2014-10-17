@@ -26,9 +26,10 @@ def restore_post(data):
             'table': 'Post'
         }
 
-        exec_message = exec_sql(build_sql_update_query(sql_scheme))
-        if exec_message != 0:
-            code = 4
+        exec_sql(build_sql_update_query(sql_scheme))
+        sql = " update Thread set posts=posts+1 where id= %s " % res['thread']
+        if res['isDeleted'] != 0:
+            exec_sql(sql)
     else:
         code = 1
 

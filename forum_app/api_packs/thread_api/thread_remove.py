@@ -26,9 +26,18 @@ def remove_thread(data):
             'table': 'Thread'
         }
 
-        exec_message = exec_sql(build_sql_update_query(sql_scheme))
-        if exec_message != 0:
-            code = 4
+        exec_message1 = exec_sql(build_sql_update_query(sql_scheme))
+
+        sql_scheme2 = {
+            'columns_names': ['isDeleted'],
+            'columns_values': [1],
+            'condition': {'thread': thread},
+            'table': 'Post'
+        }
+        exec_message2 = exec_sql(build_sql_update_query(sql_scheme2))
+
+        #if exec_message1 == exec_message2 != 0:
+        #    code = 4
     else:
         code = 1
 

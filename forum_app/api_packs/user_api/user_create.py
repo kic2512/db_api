@@ -32,9 +32,9 @@ def create_user(data):
         sql_scheme = {
             'columns_names': ['username', 'about', 'name', 'email', 'isAnonymous'],
             'columns_values': [username, about, name, email, int(isanon)],
+            #'modify': []
             'table': 'User'
         }
-
         sql = build_sql_insert_query(sql_scheme)
         exec_message = exec_sql(sql)
 

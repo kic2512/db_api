@@ -31,15 +31,12 @@ def vote_post(data):
     res = open_sql(sql_check)
 
     if res:
-        sql_scheme = {
-            'columns_names': [vote_column],
-            'columns_values': [vote],
-            'condition': {'id': post_id},
-            'table': 'Post'
-        }
-        exec_message = exec_sql(build_sql_update_query(sql_scheme))
-        if exec_message != 0:
-            code = 4
+
+        sql1 = "update Post set %s = %s+1 where id=%s" % (vote_column, vote_column, post_id)
+        exec_sql(sql1)
+        sql2 = "update Post set points=likes-dislikes  where id=%s" % post_id
+        exec_sql(sql2)
+        res = open_sql(sql_check)  # refresh
 
     else:
         code = 1

@@ -3,7 +3,8 @@ __author__ = 'kic'
 import flask
 from forum_app.api_packs.db_queries.queries import exec_sql, open_sql
 from forum_app.api_packs.make_response.make_response import make_response
-from forum_app.api_packs.db_queries.queries import build_sql_insert_query, build_sql_select_all_query
+from forum_app.api_packs.db_queries.queries import build_sql_insert_query, build_sql_select_all_query, \
+    build_sql_update_query
 
 
 def create_post(data):
@@ -44,7 +45,7 @@ def create_post(data):
     else:
         isdeleted = 'False'
 
-    #sql_check = "select * from Post where user = '%s' and date= '%s' " % (user, date)
+    # sql_check = "select * from Post where user = '%s' and date= '%s' " % (user, date)
 
     sql_scheme = {
         'columns_names': ['user', 'date'],
@@ -55,6 +56,7 @@ def create_post(data):
     sql_check = build_sql_select_all_query(sql_scheme)
     res = open_sql(sql_check)  # check if exists
     if not res:
+
         sql_scheme = {
             'columns_names': ['date', 'thread', 'message', 'user', 'forum', 'parent',
                               'isapproved', 'ishighlighted', 'isedited', 'isspam',
@@ -65,9 +67,13 @@ def create_post(data):
             'table': 'Post'
         }
         sql = build_sql_insert_query(sql_scheme)
-        exec_message = exec_sql(sql)
+        exec_message1 = exec_sql(sql)
 
-        if exec_message == 0:
+        sql = " update Thread  set posts = posts+1 where id = %s ;" % thread
+
+        exec_message2 = exec_sql(sql)
+
+        if exec_message1 == exec_message2 == 0:
             res = open_sql(sql_check)
         else:
             code = 4
@@ -79,7 +85,6 @@ def create_post(data):
                    bool(res['isEdited']), bool(res['isHighlighted']), bool(res['isSpam']), res['message'],
                    res['parent'], res['thread'], res['user']]
 
-    resp_values = [str(x) for x in resp_values]
     resp_dict = make_response(resp_keys, resp_values, code)
 
     return flask.jsonify(resp_dict)

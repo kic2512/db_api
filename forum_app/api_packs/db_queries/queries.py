@@ -32,8 +32,12 @@ def open_sql(sql):
 
 def build_sql_insert_query(sql_scheme):
 
-    columns_names = ','.join(sql_scheme['columns_names'])
-    columns_values = [" '%s' " % x for x in sql_scheme['columns_values']]
+    col_dict = dict(zip(sql_scheme['columns_names'], sql_scheme['columns_values']))
+    exists_values = dict((k, v) for k, v in col_dict.items() if col_dict[k])
+
+    columns_names = ','.join(exists_values)
+    #columns_values = [" '%s' " % x for x in sql_scheme['columns_values'] if x]
+    columns_values = [" '%s' " % v for (k, v) in exists_values.items()]
     columns_values = ','.join(columns_values)
 
     return 'insert into ' + sql_scheme['table'] + '(' + columns_names + ')' + 'values(' + columns_values + ')'
