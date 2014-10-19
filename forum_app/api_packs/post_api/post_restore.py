@@ -18,19 +18,21 @@ def restore_post(data):
 
     sql_check = build_sql_select_all_query(sql_scheme)
     res = open_sql(sql_check)
-    if res:
+    if ('isDeleted' in res) and res['isDeleted']:
         sql_scheme = {
             'columns_names': ['isDeleted'],
             'columns_values': [0],
             'condition': {'id': post},
             'table': 'Post'
         }
+        sql = " update Thread set posts=posts+1 where id= %s ;" % res['thread']
 
+        exec_sql("START TRANSACTION;")
         exec_sql(build_sql_update_query(sql_scheme))
-        sql = " update Thread set posts=posts+1 where id= %s " % res['thread']
-        if res['isDeleted'] != 0:
-            exec_sql(sql)
-    else:
+        exec_sql(sql)
+        exec_sql("COMMIT;")
+
+    if not res:
         code = 1
 
     keys = ['post']

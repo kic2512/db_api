@@ -6,4 +6,7 @@ thread_urls = {'thread_create': prefix_url + 'thread/create/',
                'thread_remove': prefix_url + 'thread/remove/',
                'thread_open': prefix_url + 'thread/open/',
                'thread_details': prefix_url + 'thread/details/',
-               'thread_restore': prefix_url + 'thread/restore/'}
+               'thread_restore': prefix_url + 'thread/restore/',
+               'thread_update': prefix_url + 'thread/update/',
+               'thread_listPosts': prefix_url + 'thread/listPosts/',
+               }

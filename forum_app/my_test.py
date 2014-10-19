@@ -1,6 +1,13 @@
 __author__ = 'kic'
 import requests
 import json
+from forum_app.api_packs.thread_api.thread_listPosts import get_thread_list_posts
+
+
+def test_thread_list_posts():
+    #{'thread': [3, ], 'order': ['desc', ]}
+    data = {'since': '2014-01-02 00:00:00', 'limit': 2, 'order': 'asc', 'thread': 3}
+    return get_thread_list_posts(data)
 
 
 def forum_create():
@@ -37,6 +44,19 @@ def thread_create():
             'isDeleted': False}
     host = "http://127.0.0.1/db/api/thread/create/"
     response = requests.post(host, data=json.dumps(d), headers={'content-type': 'application/json'})
+    print response.text
+
+
+def thread_update():
+    d = {'message': 'hey!', 'slug': 'newslug', 'thread': 2}
+    host = "http://127.0.0.1/db/api/thread/update/"
+    response = requests.post(host, data=json.dumps(d), headers={'content-type': 'application/json'})
+    print response.text
+
+
+def thread_get_list_posts():
+    host = "http://127.0.0.1/db/api/thread/listPosts/?since=2014-01-02+00%3A00%3A00&limit=2&order=asc&thread=3"
+    response = requests.get(host)
     print response.text
 
 
@@ -90,7 +110,7 @@ def post_update():
 
 
 def post_restore():
-    d = {'post': 2}
+    d = {'post': 1}
     host = "http://127.0.0.1/db/api/post/restore/"
     response = requests.post(host, data=json.dumps(d), headers={'content-type': 'application/json'})
     print response.text
@@ -123,4 +143,4 @@ def clear():
     response = requests.post(host, data=json.dumps(d), headers={'content-type': 'application/json'})
     print response.text
 
-post_vote()
+post_remove()

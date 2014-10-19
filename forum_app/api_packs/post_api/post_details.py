@@ -43,11 +43,11 @@ def get_details_post(data):
             res['thread'] = thread_resp['response']
 
         resp_keys = ['date', 'forum', 'id', 'isApproved', 'isDeleted', 'isEdited', 'isHighlighted', 'isSpam', 'message',
-                     'parent', 'thread', 'user']
+                     'parent', 'thread', 'user', 'likes', 'dislikes', 'points']
 
         resp_values = [str(res['date']), res['forum'], res['id'], bool(res['isApproved']), bool(res['isDeleted']),
                        bool(res['isEdited']), bool(res['isHighlighted']), bool(res['isSpam']), res['message'],
-                       res['parent'], res['thread'], res['user']]
+                       res['parent'], res['thread'], res['user'], res['likes'], res['dislikes'], res['points']]
 
     resp_dict = make_response(resp_keys, resp_values, code)
 

@@ -18,7 +18,7 @@ def remove_thread(data):
 
     sql_check = build_sql_select_all_query(sql_scheme)
     res = open_sql(sql_check)
-    if res:
+    if 'isDeleted' in res and (not res['isDeleted']):
         sql_scheme = {
             'columns_names': ['isDeleted'],
             'columns_values': [1],
@@ -26,19 +26,21 @@ def remove_thread(data):
             'table': 'Thread'
         }
 
-        exec_message1 = exec_sql(build_sql_update_query(sql_scheme))
-
         sql_scheme2 = {
             'columns_names': ['isDeleted'],
             'columns_values': [1],
             'condition': {'thread': thread},
             'table': 'Post'
         }
-        exec_message2 = exec_sql(build_sql_update_query(sql_scheme2))
+        sql1 = build_sql_update_query(sql_scheme)
+        sql2 = build_sql_update_query(sql_scheme2)
 
-        #if exec_message1 == exec_message2 != 0:
-        #    code = 4
-    else:
+        exec_sql("START TRANSACTION;")
+        exec_sql(sql1)
+        exec_sql(sql2)
+        exec_sql("COMMIT;")
+
+    if not res:
         code = 1
 
     keys = ['thread']

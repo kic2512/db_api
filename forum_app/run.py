@@ -18,6 +18,8 @@ from forum_app.api_packs.thread_api.thread_remove import remove_thread
 from forum_app.api_packs.thread_api.thread_open import open_thread
 from forum_app.api_packs.thread_api.thread_details import get_details_thread
 from forum_app.api_packs.thread_api.thread_restore import restore_thread
+from forum_app.api_packs.thread_api.thread_update import update_thread
+from forum_app.api_packs.thread_api.thread_listPosts import get_thread_list_posts
 
 from forum_app.api_packs.post_api.post_urls import post_urls
 from forum_app.api_packs.post_api.post_create import create_post
@@ -92,10 +94,22 @@ def api_restore_thread():
     return restore_thread(data)
 
 
+@forum.route(thread_urls['thread_update'], methods=['POST'])  # 6
+def api_update_thread():
+    data = flask.request.json
+    return update_thread(data)
+
+
 @forum.route(thread_urls['thread_details'], methods=['GET'])  # 2.2
 def api_details_thread():
     data = dict(flask.request.args)
     return flask.jsonify(get_details_thread(data))
+
+
+@forum.route(thread_urls['thread_listPosts'], methods=['GET'])  # 2.2
+def api_list_posts_thread():
+    data = dict(flask.request.args)
+    return get_thread_list_posts(data)
 
 
 @forum.route(post_urls['post_create'], methods=['POST'])  # 7

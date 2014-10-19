@@ -18,7 +18,7 @@ def restore_thread(data):
 
     sql_check = build_sql_select_all_query(sql_scheme)
     res = open_sql(sql_check)
-    if res:
+    if 'isDeleted' in res and res['isDeleted']:
         sql_scheme = {
             'columns_names': ['isDeleted'],
             'columns_values': [0],
@@ -26,19 +26,21 @@ def restore_thread(data):
             'table': 'Thread'
         }
 
-        exec_message1 = exec_sql(build_sql_update_query(sql_scheme))
-
         sql_scheme2 = {
             'columns_names': ['isDeleted'],
             'columns_values': [0],
             'condition': {'thread': thread},
             'table': 'Post'
         }
-        exec_message2 = exec_sql(build_sql_update_query(sql_scheme2))
+
+        exec_sql("START TRANSACTION;")
+        exec_sql(build_sql_update_query(sql_scheme))
+        exec_sql(build_sql_update_query(sql_scheme2))
+        exec_sql("COMMIT;")
 
         #if (exec_message1 == exec_message2) != 0:
         #    code = 4
-    else:
+    if not res:
         code = 1
 
     keys = ['thread']
