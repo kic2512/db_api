@@ -24,6 +24,12 @@ def forum_details():
     print response.text
 
 
+def forum_list_users():
+    host = "http://127.0.0.1/db/api/forum/listUsers/?order=desc&forum=forum2"
+    response = requests.get(host)
+    print response.text
+
+
 def user_create():
     d = {'username': None, 'about': 'hello im user1', 'isAnonymous': True, 'name': 'John',
             'email': 'example2@mail.ru'}
@@ -162,4 +168,4 @@ def clear():
     response = requests.post(host, data=json.dumps(d), headers={'content-type': 'application/json'})
     print response.text
 
-thread_list()
+forum_list_users()

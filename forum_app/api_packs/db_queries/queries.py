@@ -67,22 +67,26 @@ def build_sql_update_query(sql_scheme):
     return 'update ' + sql_scheme['table'] + ' set ' + b + ' where ' + con_str
 
 
-def build_sql_select_all_query(sql_scheme, is_desc=0, limit=0, larger=None):
+def build_sql_select_all_query(sql_scheme, is_desc=0, limit=0, larger=None, group=None):
 
     #columns_names = ','.join(sql_scheme['columns_names'])
 
     desc = ''
     str_lim = ''
     c = ''
+    str_group = ''
     if is_desc:
         desc = 'desc'
     if limit:
         str_lim = " limit  %s " % limit
     columns_values = ["'%s'" % x for x in sql_scheme['columns_values']]
 
+    if group:
+        str_group = " group by %s " % group
+
     a = dict(zip(sql_scheme['columns_names'], columns_values))
     b = ' and '.join(' %s=%s ' % (k, v) for k, v in a.items())
     if larger:
         c = ' and ' + ' and '.join(" %s>='%s' " % (k, v) for k, v in larger.items())
 
-    return 'select * from ' + sql_scheme['table'] + ' where ' + b + c +' order by id ' + desc +  str_lim
+    return 'select * from ' + sql_scheme['table'] + ' where ' + b + c + str_group +' order by id ' + desc +  str_lim

@@ -6,10 +6,13 @@ from flask import Flask, request, render_template
 from forum_app.api_packs.forum_api.forum_urls import forum_urls
 from forum_app.api_packs.forum_api.forum_create import create_forum
 from forum_app.api_packs.forum_api.forum_details import get_details_forum
+from forum_app.api_packs.forum_api.forum_listUsers import get_forum_users_list
 
 from forum_app.api_packs.user_api.user_urls import user_urls
 from forum_app.api_packs.user_api.user_create import create_user
 from forum_app.api_packs.user_api.user_details import get_details_user
+from forum_app.api_packs.user_api.user_listPosts import get_user_list_posts
+
 
 from forum_app.api_packs.thread_api.thread_urls import thread_urls
 from forum_app.api_packs.thread_api.thread_create import create_thread
@@ -22,6 +25,7 @@ from forum_app.api_packs.thread_api.thread_update import update_thread
 from forum_app.api_packs.thread_api.thread_listPosts import get_thread_list_posts
 from forum_app.api_packs.thread_api.thread_vote import vote_thread
 from forum_app.api_packs.thread_api.thread_list import get_thread_list
+
 
 from forum_app.api_packs.post_api.post_urls import post_urls
 from forum_app.api_packs.post_api.post_create import create_post
@@ -56,6 +60,12 @@ def api_details_forum():
     return flask.jsonify(get_details_forum(data))
 
 
+@forum.route(forum_urls['forum_listUsers'], methods=['GET'])  # 1.2
+def api_list_users_forum():
+    data = dict(flask.request.args)
+    return flask.jsonify(get_forum_users_list(data))
+
+
 @forum.route(user_urls['user_create'], methods=['POST'])  # 2.1
 def api_create_user():
     data = flask.request.json
@@ -66,6 +76,12 @@ def api_create_user():
 def api_details_user():
     data = dict(flask.request.args)
     return flask.jsonify(get_details_user(data))
+
+
+@forum.route(user_urls['user_listPosts'], methods=['GET'])  # 2.2
+def api_list_posts_user():
+    data = dict(flask.request.args)
+    return flask.jsonify(get_user_list_posts(data))
 
 
 @forum.route(thread_urls['thread_create'], methods=['POST'])  # 3
