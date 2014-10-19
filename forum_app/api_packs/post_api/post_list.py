@@ -6,11 +6,16 @@ from forum_app.api_packs.db_queries.queries import exec_sql, open_sql, open_sql_
 from forum_app.api_packs.make_response.make_response import make_response
 
 
-def get_thread_list_posts(data):
+def get_post_list(data):
     code = 0
     posts_list = []
 
-    thread_id = data.get('thread')[0]
+    thread_id = data.get('thread', [0, ])[0]
+    forum_sh_name = data.get('forum', [0, ])[0]
+
+    req_field = {'name': 'short_name', 'val': forum_sh_name, 'table': 'Forum', 'related': 'forum'}
+    if thread_id:
+        req_field = {'name': 'id', 'val': thread_id, 'table': 'Thread', 'related': 'thread'}
 
     since = data.get('since', [0, ])[0]
 
@@ -24,9 +29,9 @@ def get_thread_list_posts(data):
         is_desc = 1
 
     sql_scheme = {
-        'columns_names': ['id'],
-        'columns_values': [thread_id],
-        'table': 'Thread'
+        'columns_names': [req_field['name']],
+        'columns_values': [req_field['val']],
+        'table': req_field['table']
     }
     sql_check = build_sql_select_all_query(sql_scheme)
 
@@ -36,8 +41,8 @@ def get_thread_list_posts(data):
         code = 2
     else:
         sql_scheme = {
-            'columns_names': ['thread'],
-            'columns_values': [thread_id],
+            'columns_names': [req_field['related']],
+            'columns_values': [req_field['val']],
             'table': 'Post'
         }
 
@@ -64,3 +69,5 @@ def get_thread_list_posts(data):
         final_resp = {'code': code, 'response': resp_dict}
 
     return final_resp
+
+

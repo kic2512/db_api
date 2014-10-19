@@ -9,4 +9,6 @@ thread_urls = {'thread_create': prefix_url + 'thread/create/',
                'thread_restore': prefix_url + 'thread/restore/',
                'thread_update': prefix_url + 'thread/update/',
                'thread_listPosts': prefix_url + 'thread/listPosts/',
+               'thread_list': prefix_url + 'thread/list/',
+               'thread_vote': prefix_url + 'thread/vote/',
                }

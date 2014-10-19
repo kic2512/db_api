@@ -6,11 +6,16 @@ from forum_app.api_packs.db_queries.queries import exec_sql, open_sql, open_sql_
 from forum_app.api_packs.make_response.make_response import make_response
 
 
-def get_thread_list_posts(data):
+def get_thread_list(data):
     code = 0
     posts_list = []
 
-    thread_id = data.get('thread')[0]
+    user_email = data.get('user', [0, ])[0]
+    forum_sh_name = data.get('forum', [0, ])[0]
+
+    req_field = {'name': 'short_name', 'val': forum_sh_name, 'table': 'Forum', 'related': 'forum'}
+    if user_email:
+        req_field = {'name': 'email', 'val': user_email, 'table': 'User', 'related': 'user'}
 
     since = data.get('since', [0, ])[0]
 
@@ -24,9 +29,9 @@ def get_thread_list_posts(data):
         is_desc = 1
 
     sql_scheme = {
-        'columns_names': ['id'],
-        'columns_values': [thread_id],
-        'table': 'Thread'
+        'columns_names': [req_field['name']],
+        'columns_values': [req_field['val']],
+        'table': req_field['table']
     }
     sql_check = build_sql_select_all_query(sql_scheme)
 
@@ -36,9 +41,9 @@ def get_thread_list_posts(data):
         code = 2
     else:
         sql_scheme = {
-            'columns_names': ['thread'],
-            'columns_values': [thread_id],
-            'table': 'Post'
+            'columns_names': [req_field['related']],
+            'columns_values': [req_field['val']],
+            'table': 'Thread'
         }
 
         larger = {'date': since}
@@ -47,20 +52,17 @@ def get_thread_list_posts(data):
 
         posts_list = open_sql_all(sql)
 
-    resp_keys = ['date', 'forum', 'id', 'isApproved', 'isDeleted', 'isEdited', 'isHighlighted', 'isSpam', 'message',
-                 'parent', 'thread', 'user', 'likes', 'dislikes', 'points']
+    keys = ['id', 'date', 'forum', 'isClosed', 'isDeleted', 'message', 'slug', 'title', 'user', 'posts']
 
     resp_dict = []
     final_resp = make_response(code=code)
 
     if code == 0 and posts_list:
         for res in posts_list:
+            values = [res['id'], str(res['date']), res['forum'], bool(res['isClosed']), bool(res['isDeleted']),
+                      res['message'], res['slug'], res['title'], res['user'], res['posts']]
 
-            resp_values = [str(res['date']), res['forum'], res['id'], bool(res['isApproved']), bool(res['isDeleted']),
-                           bool(res['isEdited']), bool(res['isHighlighted']), bool(res['isSpam']), res['message'],
-                           res['parent'], res['thread'], res['user'], res['likes'], res['dislikes'],
-                           res['points']]
-            resp_dict.append(make_response(resp_keys, resp_values, code)['response'])
+            resp_dict.append(make_response(keys, values, code)['response'])
         final_resp = {'code': code, 'response': resp_dict}
 
     return final_resp

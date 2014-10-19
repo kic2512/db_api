@@ -81,6 +81,18 @@ def post_details():
     print response.text
 
 
+def post_list():
+    host = "http://127.0.0.1/db/api/post/list/?since=2014-01-01+00%3A00%3A00&order=desc&forum=forum1"
+    response = requests.get(host)
+    print response.text
+
+
+def thread_list():
+    host = "http://127.0.0.1/db/api/thread/list/?since=2014-01-01+00%3A00%3A00&order=desc&user=richard.nixon@example.com"
+    response = requests.get(host)
+    print response.text
+
+
 def thread_close():
     d = {'thread': 1}
     host = "http://127.0.0.1/db/api/thread/close/"
@@ -123,6 +135,13 @@ def thread_remove():
     print response.text
 
 
+def thread_vote():
+    d = {"vote": 1, "thread": 1}
+    host = "http://127.0.0.1/db/api/thread/vote/"
+    response = requests.post(host, data=json.dumps(d), headers={'content-type': 'application/json'})
+    print response.text
+
+
 def thread_restore():
     d = {'thread': 1}
     host = "http://127.0.0.1/db/api/thread/restore/"
@@ -143,4 +162,4 @@ def clear():
     response = requests.post(host, data=json.dumps(d), headers={'content-type': 'application/json'})
     print response.text
 
-post_remove()
+thread_list()

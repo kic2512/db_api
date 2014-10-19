@@ -20,6 +20,8 @@ from forum_app.api_packs.thread_api.thread_details import get_details_thread
 from forum_app.api_packs.thread_api.thread_restore import restore_thread
 from forum_app.api_packs.thread_api.thread_update import update_thread
 from forum_app.api_packs.thread_api.thread_listPosts import get_thread_list_posts
+from forum_app.api_packs.thread_api.thread_vote import vote_thread
+from forum_app.api_packs.thread_api.thread_list import get_thread_list
 
 from forum_app.api_packs.post_api.post_urls import post_urls
 from forum_app.api_packs.post_api.post_create import create_post
@@ -28,6 +30,8 @@ from forum_app.api_packs.post_api.post_restore import restore_post
 from forum_app.api_packs.post_api.post_update import update_post
 from forum_app.api_packs.post_api.post_vote import vote_post
 from forum_app.api_packs.post_api.post_details import get_details_post
+from forum_app.api_packs.post_api.post_list import get_post_list
+
 
 from forum_app.api_packs.clear import truncate_all
 
@@ -88,6 +92,12 @@ def api_remove_thread():
     return remove_thread(data)
 
 
+@forum.route(thread_urls['thread_vote'], methods=['POST'])  # 6
+def api_vote_thread():
+    data = flask.request.json
+    return vote_thread(data)
+
+
 @forum.route(thread_urls['thread_restore'], methods=['POST'])  # 6
 def api_restore_thread():
     data = flask.request.json
@@ -109,7 +119,13 @@ def api_details_thread():
 @forum.route(thread_urls['thread_listPosts'], methods=['GET'])  # 2.2
 def api_list_posts_thread():
     data = dict(flask.request.args)
-    return get_thread_list_posts(data)
+    return flask.jsonify(get_thread_list_posts(data))
+
+
+@forum.route(thread_urls['thread_list'], methods=['GET'])  # 2.2
+def api_list_thread():
+    data = dict(flask.request.args)
+    return flask.jsonify(get_thread_list(data))
 
 
 @forum.route(post_urls['post_create'], methods=['POST'])  # 7
@@ -122,6 +138,12 @@ def api_create_post():
 def api_details_post():
     data = dict(flask.request.args)
     return flask.jsonify(get_details_post(data))
+
+
+@forum.route(post_urls['post_list'], methods=['GET'])  # 7
+def api_list_post():
+    data = dict(flask.request.args)
+    return flask.jsonify(get_post_list(data))
 
 
 @forum.route(post_urls['post_remove'], methods=['POST'])  # 8

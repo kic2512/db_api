@@ -83,6 +83,6 @@ def build_sql_select_all_query(sql_scheme, is_desc=0, limit=0, larger=None):
     a = dict(zip(sql_scheme['columns_names'], columns_values))
     b = ' and '.join(' %s=%s ' % (k, v) for k, v in a.items())
     if larger:
-        c = ' and ' + ' and '.join(" %s>'%s' " % (k, v) for k, v in larger.items())
+        c = ' and ' + ' and '.join(" %s>='%s' " % (k, v) for k, v in larger.items())
 
     return 'select * from ' + sql_scheme['table'] + ' where ' + b + c +' order by id ' + desc +  str_lim
