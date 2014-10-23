@@ -19,7 +19,7 @@ def remove_post(data):
     sql_check = build_sql_select_all_query(sql_scheme)
     res = open_sql(sql_check)
 
-    if ('isDeleted' in res) and (not res['isDeleted']):
+    if res:
         sql_scheme = {
             'columns_names': ['isDeleted'],
             'columns_values': [1],

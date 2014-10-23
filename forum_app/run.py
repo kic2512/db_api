@@ -1,3 +1,8 @@
+from forum_app.api_packs.forum_api.forum_listPosts import get_forum_posts_list
+from forum_app.api_packs.forum_api.forum_listThreads import get_forum_threads_list
+from forum_app.api_packs.user_api.user_list_followers import get_user_list_followers
+from forum_app.api_packs.user_api.user_list_following import get_user_list_following
+
 __author__ = 'kic'
 
 import flask
@@ -71,6 +76,18 @@ def api_list_users_forum():
     return flask.jsonify(get_forum_users_list(data))
 
 
+@forum.route(forum_urls['forum_listPosts'], methods=['GET'])  # 1.2
+def api_list_posts_forum():
+    data = dict(flask.request.args)
+    return flask.jsonify(get_forum_posts_list(data))
+
+
+@forum.route(forum_urls['forum_listThreads'], methods=['GET'])  # 1.2
+def api_list_threads_forum():
+    data = dict(flask.request.args)
+    return flask.jsonify(get_forum_threads_list(data))
+
+
 @forum.route(user_urls['user_create'], methods=['POST'])  # 2.1
 def api_create_user():
     data = flask.request.json
@@ -105,6 +122,18 @@ def api_details_user():
 def api_list_posts_user():
     data = dict(flask.request.args)
     return flask.jsonify(get_user_list_posts(data))
+
+
+@forum.route(user_urls['user_list_followers'], methods=['GET'])  # 2.2
+def api_list_followers_user():
+    data = dict(flask.request.args)
+    return flask.jsonify(get_user_list_followers(data))
+
+
+@forum.route(user_urls['user_list_following'], methods=['GET'])  # 2.2
+def api_list_following_user():
+    data = dict(flask.request.args)
+    return flask.jsonify(get_user_list_following(data))
 
 
 @forum.route(thread_urls['thread_create'], methods=['POST'])  # 3

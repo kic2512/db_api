@@ -6,4 +6,6 @@ user_urls = {'user_create': prefix_url + 'user/create/',
              'user_details': prefix_url + 'user/details/',
              'user_follow': prefix_url + 'user/follow/',
              'user_update': prefix_url + 'user/updateProfile/',
+             'user_list_followers': prefix_url + 'user/listFollowers/',
+             'user_list_following': prefix_url + 'user/listFollowing/',
              'user_unfollow': prefix_url + 'user/unfollow/'}

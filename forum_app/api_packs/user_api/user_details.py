@@ -44,6 +44,7 @@ def get_details_user(data, by_id=False):
         }
 
         sql_get_followers_usr1 = build_sql_select_all_query(sql_scheme_get_followers, what='follower')
+
         sql_get_following_usr1 = build_sql_select_all_query(sql_scheme_get_following, what='followee')
 
         followers = open_sql_all(sql_get_followers_usr1)

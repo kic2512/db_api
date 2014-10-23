@@ -14,6 +14,8 @@ def get_details_thread(data):
     thread_id = data.get('thread', None)[0]
 
     related = data.get('related', None)
+    if related and 'thread' in related:
+        code = 3
 
     sql_scheme = {
         'columns_names': ['id'],
