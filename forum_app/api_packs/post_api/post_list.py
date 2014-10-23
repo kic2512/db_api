@@ -1,3 +1,5 @@
+from forum_app.api_packs.user_api.user_details import get_details_user
+
 __author__ = 'kic'
 
 import flask
@@ -60,10 +62,12 @@ def get_post_list(data):
 
     if code == 0 and posts_list:
         for res in posts_list:
+            user_data = {'user_id': [res['user'], ], 'user': [None, ]}
+            user_resp = get_details_user(user_data, by_id=True)['response']
 
             resp_values = [str(res['date']), res['forum'], res['id'], bool(res['isApproved']), bool(res['isDeleted']),
                            bool(res['isEdited']), bool(res['isHighlighted']), bool(res['isSpam']), res['message'],
-                           res['parent'], res['thread'], res['user'], res['likes'], res['dislikes'],
+                           res['parent'], res['thread'], user_resp['email'], res['likes'], res['dislikes'],
                            res['points']]
             resp_dict.append(make_response(resp_keys, resp_values, code)['response'])
         final_resp = {'code': code, 'response': resp_dict}

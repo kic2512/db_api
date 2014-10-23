@@ -1,6 +1,8 @@
 <component name="ProjectDictionaryState">
   <dictionary name="kic">
     <words>
+      <w>followee</w>
+      <w>followees</w>
       <w>forumwithsufficientlylargename</w>
       <w>fwsln</w>
       <w>isanon</w>
@@ -14,6 +16,8 @@
       <w>technopark</w>
       <w>threadwithsufficientlylargetitle</w>
       <w>trall</w>
+      <w>unfollow</w>
+      <w>unsubscribe</w>
     </words>
   </dictionary>
 </component>

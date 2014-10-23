@@ -13,7 +13,7 @@ def get_forum_users_list(data):
 
     forum_sh_name = data.get('forum')[0]
 
-    since = data.get('since', [0, ])[0]
+    since = data.get('since_id', [0, ])[0]
 
     limit = data.get('limit', [0, ])[0]
 

@@ -25,12 +25,10 @@ def restore_post(data):
             'condition': {'id': post},
             'table': 'Post'
         }
-        sql = " update Thread set posts=posts+1 where id= %s ;" % res['thread']
+        sql1 = build_sql_update_query(sql_scheme)
+        sql2 = " update Thread set posts=posts+1 where id= %s ;" % res['thread']
 
-        exec_sql("START TRANSACTION;")
-        exec_sql(build_sql_update_query(sql_scheme))
-        exec_sql(sql)
-        exec_sql("COMMIT;")
+        exec_sql([sql1, sql2], multi=True)
 
     if not res:
         code = 1

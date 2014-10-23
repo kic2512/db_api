@@ -4,11 +4,17 @@ import MySQLdb
 from forum_app.settings import DB
 
 
-def exec_sql(sql):
+def exec_sql(sql, multi=False):
     database = MySQLdb.connect(user=DB['USER'], host=DB['HOST'], passwd=DB['PASSWORD'], db=DB['NAME'], charset='utf8')
     cursor = database.cursor()
 
-    cursor.execute(sql)
+    if not multi:
+        cursor.execute(sql)
+    else:
+        cursor.execute("START TRANSACTION;")
+        for s in sql:
+            cursor.execute(s)
+        cursor.execute("COMMIT;")
 
     database.commit()
     database.close()
@@ -46,12 +52,11 @@ def open_sql_all(sql):
 
 
 def build_sql_insert_query(sql_scheme):
-
     col_dict = dict(zip(sql_scheme['columns_names'], sql_scheme['columns_values']))
     exists_values = dict((k, v) for k, v in col_dict.items() if col_dict[k])
 
     columns_names = ','.join(exists_values)
-    #columns_values = [" '%s' " % x for x in sql_scheme['columns_values'] if x]
+    # columns_values = [" '%s' " % x for x in sql_scheme['columns_values'] if x]
     columns_values = [" '%s' " % v for (k, v) in exists_values.items()]
     columns_values = ','.join(columns_values)
 
@@ -59,7 +64,6 @@ def build_sql_insert_query(sql_scheme):
 
 
 def build_sql_update_query(sql_scheme):
-
     a = dict(zip(sql_scheme['columns_names'], sql_scheme['columns_values']))
     b = ' , '.join(" %s='%s' " % (k, v) for k, v in a.items())
     condition = [" %s = '%s' " % (k, v) for k, v in sql_scheme['condition'].items()]
@@ -67,9 +71,8 @@ def build_sql_update_query(sql_scheme):
     return 'update ' + sql_scheme['table'] + ' set ' + b + ' where ' + con_str
 
 
-def build_sql_select_all_query(sql_scheme, is_desc=0, limit=0, larger=None, group=None):
-
-    #columns_names = ','.join(sql_scheme['columns_names'])
+def build_sql_select_all_query(sql_scheme, is_desc=0, limit=0, larger=None, group=None, what=' * '):
+    # columns_names = ','.join(sql_scheme['columns_names'])
 
     desc = ''
     str_lim = ''
@@ -89,4 +92,5 @@ def build_sql_select_all_query(sql_scheme, is_desc=0, limit=0, larger=None, grou
     if larger:
         c = ' and ' + ' and '.join(" %s>='%s' " % (k, v) for k, v in larger.items())
 
-    return 'select * from ' + sql_scheme['table'] + ' where ' + b + c + str_group +' order by id ' + desc +  str_lim
+    return 'select ' + what + ' from ' + sql_scheme[
+        'table'] + ' where ' + b + c + str_group + ' order by id ' + desc + str_lim

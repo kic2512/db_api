@@ -28,13 +28,15 @@ def get_details_thread(data):
     if not res:
         code = 2
     else:
+        user_data = {'user_id': [res['user'], ], 'user': [None, ]}
+        user_resp = get_details_user(user_data, by_id=True)
+        res['user'] = user_resp['response']['email']
+
         if related:
             forum_data = {'forum': [res['forum']], }
             forum_resp = get_details_forum(forum_data)
             res['forum'] = forum_resp['response']
 
-            user_data = {'user': [res['user'], ]}
-            user_resp = get_details_user(user_data)
             res['user'] = user_resp['response']
 
         keys = ['id', 'date', 'dislikes', 'forum', 'isClosed', 'isDeleted', 'likes', 'message', 'points', 'posts',

@@ -25,13 +25,11 @@ def remove_post(data):
             'condition': {'id': post},
             'table': 'Post'
         }
-        sql = " update Thread set posts=posts-1 where id= %s ;" % res['thread']
-        sql_update = build_sql_update_query(sql_scheme)
 
-        exec_sql("START TRANSACTION;")
-        exec_message = exec_sql(sql_update)
-        exec_sql(sql)
-        exec_sql("COMMIT;")
+        sql_update = build_sql_update_query(sql_scheme)
+        sql = " update Thread set posts=posts-1 where id= %s ;" % res['thread']
+
+        exec_message = exec_sql([sql_update, sql], multi=True)
 
         if exec_message != 0:
             code = 4

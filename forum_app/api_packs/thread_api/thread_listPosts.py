@@ -1,3 +1,6 @@
+from forum_app.api_packs.post_api.post_details import get_details_post
+from forum_app.api_packs.user_api.user_details import get_details_user
+
 __author__ = 'kic'
 
 import flask
@@ -19,7 +22,7 @@ def get_thread_list_posts(data):
     sort_by = data.get('sort', 'flat')
 
     is_desc = 0
-    order_by = data.get('order', 'desc')
+    order_by = data.get('order', ['asc', ])
     if 'desc' in order_by:
         is_desc = 1
 
@@ -43,24 +46,25 @@ def get_thread_list_posts(data):
 
         larger = {'date': since}
 
-        sql = build_sql_select_all_query(sql_scheme, is_desc, limit, larger)
+        sql = build_sql_select_all_query(sql_scheme, is_desc=is_desc, limit=limit, larger=larger, what=' id,user ')
 
+        #sql = 'select id,user from Post where thread = %s ' % thread_id
         posts_list = open_sql_all(sql)
 
-    resp_keys = ['date', 'forum', 'id', 'isApproved', 'isDeleted', 'isEdited', 'isHighlighted', 'isSpam', 'message',
-                 'parent', 'thread', 'user', 'likes', 'dislikes', 'points']
-
-    resp_dict = []
-    final_resp = make_response(code=code)
+    final_resp = []
 
     if code == 0 and posts_list:
         for res in posts_list:
+            post_data = {'post': [res['id'], ]}
+            post_resp = get_details_post(post_data)['response']
 
-            resp_values = [str(res['date']), res['forum'], res['id'], bool(res['isApproved']), bool(res['isDeleted']),
-                           bool(res['isEdited']), bool(res['isHighlighted']), bool(res['isSpam']), res['message'],
-                           res['parent'], res['thread'], res['user'], res['likes'], res['dislikes'],
-                           res['points']]
-            resp_dict.append(make_response(resp_keys, resp_values, code)['response'])
-        final_resp = {'code': code, 'response': resp_dict}
+            user_data = {'user_id': [res['user'], ], 'user': [None, ]}
+            user_resp = get_details_user(user_data, by_id=True)['response']
 
-    return final_resp
+            post_resp['user'] = user_resp['email']
+
+            final_resp.append(post_resp)
+
+    out_dict = {'code': code, 'response': final_resp}
+
+    return out_dict

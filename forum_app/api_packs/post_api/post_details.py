@@ -11,6 +11,9 @@ from forum_app.api_packs.thread_api.thread_details import get_details_thread
 
 def get_details_post(data):
     code = 0
+    resp_keys = []
+    resp_values = []
+
     post_id = data.get('post', None)[0]
 
     related = data.get('related', None)
@@ -20,22 +23,25 @@ def get_details_post(data):
         'columns_values': [post_id],
         'table': 'Post'
     }
-
     sql_check = build_sql_select_all_query(sql_scheme)
 
     res = open_sql(sql_check)  # check if exists
 
     if not res:
-        code = 2
+        code = 1
     else:
+        user_data = {'user_id': [res['user'], ], 'user': [None, ]}
+
+        user_resp = get_details_user(user_data, by_id=True)
+
+        res['user'] = user_resp['response']['email']
+
         if related:
 
             forum_data = {'forum': [res['forum']], }
             forum_resp = get_details_forum(forum_data)
             res['forum'] = forum_resp['response']
 
-            user_data = {'user': [res['user'], ]}
-            user_resp = get_details_user(user_data)
             res['user'] = user_resp['response']
 
             thread_data = {'thread': [res['thread'], ]}
@@ -45,7 +51,7 @@ def get_details_post(data):
         resp_keys = ['date', 'forum', 'id', 'isApproved', 'isDeleted', 'isEdited', 'isHighlighted', 'isSpam', 'message',
                      'parent', 'thread', 'user', 'likes', 'dislikes', 'points']
 
-        resp_values = [str(res['date']), res['forum'], res['id'], bool(res['isApproved']), bool(res['isDeleted']),
+        resp_values = [str(res['date']), res['forum'], int(post_id), bool(res['isApproved']), bool(res['isDeleted']),
                        bool(res['isEdited']), bool(res['isHighlighted']), bool(res['isSpam']), res['message'],
                        res['parent'], res['thread'], res['user'], res['likes'], res['dislikes'], res['points']]
 

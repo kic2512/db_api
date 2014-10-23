@@ -11,4 +11,6 @@ thread_urls = {'thread_create': prefix_url + 'thread/create/',
                'thread_listPosts': prefix_url + 'thread/listPosts/',
                'thread_list': prefix_url + 'thread/list/',
                'thread_vote': prefix_url + 'thread/vote/',
+               'thread_subscribe': prefix_url + 'thread/subscribe/',
+               'thread_unsubscribe': prefix_url + 'thread/unsubscribe/',
                }

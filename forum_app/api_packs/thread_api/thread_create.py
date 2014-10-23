@@ -1,3 +1,5 @@
+from forum_app.api_packs.user_api.user_details import get_details_user
+
 __author__ = 'kic'
 import flask
 from forum_app.api_packs.db_queries.queries import exec_sql, open_sql, build_sql_insert_query, build_sql_select_all_query
@@ -10,10 +12,14 @@ def create_thread(data):
     title = data['title']
 
     isclosed = data['isClosed']
-    user = data['user']
+
     date = data['date']
     message = data['message']
     slug = data['slug']
+
+    user = data['user']
+    usr_details = get_details_user({'user': [user, ]})['response']
+    usr_id = usr_details['id']
 
     if 'isDeleted' in data:
         isdeleted = data['isDeleted']
@@ -33,7 +39,7 @@ def create_thread(data):
     if not res:
         sql_scheme = {
             'columns_names': ['forum', 'title', 'isClosed', 'user', 'date', 'message', 'slug', 'isDeleted'],
-            'columns_values': [forum, title, int(isclosed), user, date, message, slug, int(isdeleted)],
+            'columns_values': [forum, title, int(isclosed), usr_id, date, message, slug, int(isdeleted)],
             'table': 'Thread'
         }
         sql = build_sql_insert_query(sql_scheme)

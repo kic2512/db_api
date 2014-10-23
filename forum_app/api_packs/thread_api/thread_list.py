@@ -1,3 +1,5 @@
+from forum_app.api_packs.user_api.user_details import get_details_user
+
 __author__ = 'kic'
 
 import flask
@@ -59,8 +61,11 @@ def get_thread_list(data):
 
     if code == 0 and posts_list:
         for res in posts_list:
+            user_data = {'user_id': [res['user'], ], 'user': [None, ]}
+            user_resp = get_details_user(user_data, by_id=True)['response']
+
             values = [res['id'], str(res['date']), res['forum'], bool(res['isClosed']), bool(res['isDeleted']),
-                      res['message'], res['slug'], res['title'], res['user'], res['posts']]
+                      res['message'], res['slug'], res['title'], user_resp['email'], res['posts']]
 
             resp_dict.append(make_response(keys, values, code)['response'])
         final_resp = {'code': code, 'response': resp_dict}

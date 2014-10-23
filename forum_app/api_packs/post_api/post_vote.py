@@ -33,9 +33,10 @@ def vote_post(data):
     if res:
 
         sql1 = "update Post set %s = %s+1 where id=%s" % (vote_column, vote_column, post_id)
-        exec_sql(sql1)
         sql2 = "update Post set points=likes-dislikes  where id=%s" % post_id
-        exec_sql(sql2)
+
+        exec_sql([sql1, sql2], multi=True)
+
         res = open_sql(sql_check)  # refresh
 
     else:

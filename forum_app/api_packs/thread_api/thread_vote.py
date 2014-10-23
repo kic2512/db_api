@@ -35,10 +35,7 @@ def vote_thread(data):
         sql1 = "update Thread set %s = %s+1 where id=%s" % (vote_column, vote_column, thread_id)
         sql2 = "update Thread set points=likes-dislikes  where id=%s" % thread_id
 
-        exec_sql("START TRANSACTION;")
-        exec_sql(sql1)
-        exec_sql(sql2)
-        exec_sql("COMMIT;")
+        exec_sql([sql1, sql2], multi=True)
 
         res = open_sql(sql_check)  # refresh
 

@@ -6,24 +6,26 @@ from forum_app.api_packs.make_response.make_response import make_response
 from forum_app.api_packs.db_queries.queries import build_sql_insert_query, build_sql_select_all_query, \
     build_sql_update_query
 
+from forum_app.api_packs.user_api.user_details import get_details_user
+from forum_app.api_packs.post_api.post_details import get_details_post
+
 
 def create_post(data):
     code = 0
     date = data['date']
     thread = data['thread']
     message = data['message']
-    user = data['user']
     forum = data['forum']
 
-    if 'parent' in data:
-        parent = data['parent']
-    else:
-        parent = None
+    user = data['user']
 
-    if 'isApproved' in data:
-        isapproved = data['isApproved']
-    else:
-        isapproved = 'False'
+    usr_details = get_details_user({'user': [user, ]})['response']
+
+    usr_id = usr_details['id']
+
+    parent = data.get('parent', None)
+
+    isapproved = data.get('isApproved', 'False')
 
     if 'isHighlighted' in data:
         ishighlighted = data['isHighlighted']
@@ -48,43 +50,38 @@ def create_post(data):
     # sql_check = "select * from Post where user = '%s' and date= '%s' " % (user, date)
 
     sql_scheme = {
-        'columns_names': ['user', 'date'],
-        'columns_values': [user, date],
+        'columns_names': ['user', 'date', 'message'],
+        'columns_values': [usr_id, date, message],
         'table': 'Post'
     }
-
     sql_check = build_sql_select_all_query(sql_scheme)
-    res = open_sql(sql_check)  # check if exists
+    #res = open_sql(sql_check)  # check if exists
+    res = False
     if not res:
 
         sql_scheme = {
             'columns_names': ['date', 'thread', 'message', 'user', 'forum', 'parent',
                               'isapproved', 'ishighlighted', 'isedited', 'isspam',
                               'isdeleted'],
-            'columns_values': [date, thread, message, user, forum, parent,
+            'columns_values': [date, thread, message, usr_id, forum, parent,
                                int(isapproved), int(ishighlighted), int(isedited), int(isspam),
                                int(isdeleted)],
             'table': 'Post'
         }
-        sql = build_sql_insert_query(sql_scheme)
-        exec_message1 = exec_sql(sql)
+        sql_post = build_sql_insert_query(sql_scheme)
+        sql_thread = " update Thread  set posts = posts+1 where id = %s ;" % thread
 
-        sql = " update Thread  set posts = posts+1 where id = %s ;" % thread
+        exec_message1 = exec_sql([sql_post, sql_thread], multi=True)
 
-        exec_message2 = exec_sql(sql)
-
-        if exec_message1 == exec_message2 == 0:
+        if exec_message1 == 0:
             res = open_sql(sql_check)
         else:
             code = 4
     # return str(res)
+    post_data = {'post': [int(res['id']), ]}
 
-    resp_keys = ['date', 'forum', 'id', 'isApproved', 'isDeleted', 'isEdited', 'isHighlighted', 'isSpam', 'message',
-                 'parent', 'thread', 'user']
-    resp_values = [res['date'], res['forum'], res['id'], bool(res['isApproved']), bool(res['isDeleted']),
-                   bool(res['isEdited']), bool(res['isHighlighted']), bool(res['isSpam']), res['message'],
-                   res['parent'], res['thread'], res['user']]
+    post_resp = get_details_post(post_data)
 
-    resp_dict = make_response(resp_keys, resp_values, code)
+    #resp_dict = post_resp['response']
 
-    return flask.jsonify(resp_dict)
+    return flask.jsonify(post_resp)

@@ -12,6 +12,9 @@ from forum_app.api_packs.user_api.user_urls import user_urls
 from forum_app.api_packs.user_api.user_create import create_user
 from forum_app.api_packs.user_api.user_details import get_details_user
 from forum_app.api_packs.user_api.user_listPosts import get_user_list_posts
+from forum_app.api_packs.user_api.user_follow import follow_user
+from forum_app.api_packs.user_api.user_unfollow import unfollow_user
+from forum_app.api_packs.user_api.user_update import update_user
 
 
 from forum_app.api_packs.thread_api.thread_urls import thread_urls
@@ -25,6 +28,8 @@ from forum_app.api_packs.thread_api.thread_update import update_thread
 from forum_app.api_packs.thread_api.thread_listPosts import get_thread_list_posts
 from forum_app.api_packs.thread_api.thread_vote import vote_thread
 from forum_app.api_packs.thread_api.thread_list import get_thread_list
+from forum_app.api_packs.thread_api.thread_subscribe import subscribe_thread
+from forum_app.api_packs.thread_api.thread_unsubscribe import unsubscribe_thread
 
 
 from forum_app.api_packs.post_api.post_urls import post_urls
@@ -72,6 +77,24 @@ def api_create_user():
     return create_user(data)
 
 
+@forum.route(user_urls['user_update'], methods=['POST'])  # 2.1
+def api_update_user():
+    data = flask.request.json
+    return update_user(data)
+
+
+@forum.route(user_urls['user_follow'], methods=['POST'])  # 2.1
+def api_follow_user():
+    data = flask.request.json
+    return follow_user(data)
+
+
+@forum.route(user_urls['user_unfollow'], methods=['POST'])  # 2.1
+def api_unfollow_user():
+    data = flask.request.json
+    return unfollow_user(data)
+
+
 @forum.route(user_urls['user_details'], methods=['GET'])  # 2.2
 def api_details_user():
     data = dict(flask.request.args)
@@ -88,6 +111,18 @@ def api_list_posts_user():
 def api_create_thread():
     data = flask.request.json
     return create_thread(data)
+
+
+@forum.route(thread_urls['thread_subscribe'], methods=['POST'])  # 3
+def api_subscribe_thread():
+    data = flask.request.json
+    return subscribe_thread(data)
+
+
+@forum.route(thread_urls['thread_unsubscribe'], methods=['POST'])  # 3
+def api_unsubscribe_thread():
+    data = flask.request.json
+    return unsubscribe_thread(data)
 
 
 @forum.route(thread_urls['thread_close'], methods=['POST'])  # 4

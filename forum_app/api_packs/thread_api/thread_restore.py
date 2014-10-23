@@ -32,11 +32,10 @@ def restore_thread(data):
             'condition': {'thread': thread},
             'table': 'Post'
         }
+        sql1 = build_sql_update_query(sql_scheme)
+        sql2 = build_sql_update_query(sql_scheme2)
 
-        exec_sql("START TRANSACTION;")
-        exec_sql(build_sql_update_query(sql_scheme))
-        exec_sql(build_sql_update_query(sql_scheme2))
-        exec_sql("COMMIT;")
+        exec_sql([sql1, sql2], multi=True)
 
         #if (exec_message1 == exec_message2) != 0:
         #    code = 4
