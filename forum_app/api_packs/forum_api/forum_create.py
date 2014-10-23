@@ -11,10 +11,7 @@ def create_forum(data):
     code = 0
     name = data['name'].encode("utf-8")
     shn = data['short_name'].encode("utf-8")
-    usr = data['user'].encode("utf-8")
-
-    usr_details = get_details_user({'user': [usr, ]})
-    usr_id = usr_details['response']['id']
+    email = data['user'].encode("utf-8")
 
     #sql_check = "select id,name,short_name,user from Forum where name = '%s' and short_name = '%s' " % (name, shn)
     sql_scheme = {
@@ -29,7 +26,7 @@ def create_forum(data):
     if not res:
         sql_scheme = {
             'columns_names': ['name', 'short_name', 'user'],
-            'columns_values': [name, shn, usr_id],
+            'columns_values': [name, shn, email],
             'table': 'Forum'
         }
 
@@ -41,7 +38,7 @@ def create_forum(data):
             code = 4
 
     keys = ['id', 'name', 'short_name', 'user']
-    values = [int(res['id']), res['name'], res['short_name'], usr]
+    values = [int(res['id']), res['name'], res['short_name'], email]
     resp_dict = make_response(keys, values, code)
 
     return flask.jsonify(resp_dict)

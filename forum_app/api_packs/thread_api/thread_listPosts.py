@@ -57,12 +57,6 @@ def get_thread_list_posts(data):
         for res in posts_list:
             post_data = {'post': [res['id'], ]}
             post_resp = get_details_post(post_data)['response']
-
-            user_data = {'user_id': [res['user'], ], 'user': [None, ]}
-            user_resp = get_details_user(user_data, by_id=True)['response']
-
-            post_resp['user'] = user_resp['email']
-
             final_resp.append(post_resp)
 
     out_dict = {'code': code, 'response': final_resp}

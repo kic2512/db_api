@@ -25,7 +25,7 @@ def forum_details():
 
 
 def forum_list_users():
-    host = "http://127.0.0.1/db/api/forum/listUsers/?order=desc&forum=forum2"
+    host = "http://127.0.0.1/db/api/forum/listUsers/?limit=2&forum=forumwithsufficientlylargename&since_id=10&order=asc"
     response = requests.get(host)
     print response.text
 
@@ -89,26 +89,26 @@ def thread_update():
 
 
 def thread_get_list_posts():
-    host = "http://127.0.0.1/db/api/thread/listPosts/?since=2014-01-02+00%3A00%3A00&limit=2&order=asc&thread=4"
+    host = "http://127.0.0.1/db/api/thread/listPosts/?order=desc&thread=1"
     response = requests.get(host)
     print response.text
 
 
 def thread_details():
-    host = "http://127.0.0.1/db/api/thread/details/?thread=1&related=forum&related=user"
+    host = "http://127.0.0.1/db/api/thread/details/?thread=4&related=forum&related=user"
     response = requests.get(host)
     print response.text
 
 
 def post_create():
-    d = {'forum': 'forum1', 'thread': 3, 'isApproved': False, 'isDeleted': True, 'isEdited': False, 'date': '2014-01-03 00:08:01', 'message': 'my message 1', 'isSpam': False, 'isHighlighted': False, 'user': 'example@mail.ru'}
+    d = {'forum': 'forum1', 'thread': 4, 'isApproved': False, 'isDeleted': True, 'isEdited': False, 'date': '2014-01-03 00:08:01', 'message': 'my message 1', 'isSpam': False, 'isHighlighted': False, 'user': 'example@mail.ru'}
     host = "http://127.0.0.1/db/api/post/create/"
     response = requests.post(host, data=json.dumps(d), headers={'content-type': 'application/json'})
     print response.text
 
 
 def post_details():
-    host = "http://127.0.0.1/db/api/post/details/?post=-1&related=forum&related=thread&related=user"
+    host = "http://127.0.0.1/db/api/post/details/?post=5&related=thread&related=forum&related=user"
     response = requests.get(host)
     print response.text
 
@@ -133,8 +133,15 @@ def thread_close():
 
 
 def post_remove():
-    d = {'post': 5}
+    d = {'post': 2}
     host = "http://127.0.0.1/db/api/post/remove/"
+    response = requests.post(host, data=json.dumps(d), headers={'content-type': 'application/json'})
+    print response.text
+
+
+def post_restore():
+    d = {'post': 2}
+    host = "http://127.0.0.1/db/api/post/restore/"
     response = requests.post(host, data=json.dumps(d), headers={'content-type': 'application/json'})
     print response.text
 
@@ -149,13 +156,6 @@ def post_vote():
 def post_update():
     d = {"post": 3, "message": "my message 1 LALALA"}
     host = "http://127.0.0.1/db/api/post/update/"
-    response = requests.post(host, data=json.dumps(d), headers={'content-type': 'application/json'})
-    print response.text
-
-
-def post_restore():
-    d = {'post': 1}
-    host = "http://127.0.0.1/db/api/post/restore/"
     response = requests.post(host, data=json.dumps(d), headers={'content-type': 'application/json'})
     print response.text
 
@@ -194,5 +194,5 @@ def clear():
     response = requests.post(host, data=json.dumps(d), headers={'content-type': 'application/json'})
     print response.text
 
-
-user_details()
+thread_remove()
+thread_get_list_posts()

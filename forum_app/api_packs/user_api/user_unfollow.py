@@ -28,18 +28,18 @@ def unfollow_user(data):
         'table': 'User'
     }
 
+    sql_scheme_follow = {
+        'columns_names': ['follower', 'followee'],
+        'columns_values': [email_1, email_2],
+        'table': 'Followers'
+    }
+
     sql_check_usr1 = build_sql_select_all_query(sql_scheme_usr1)
     sql_check_usr2 = build_sql_select_all_query(sql_scheme_usr2)
+    sql_check_follow = build_sql_select_all_query(sql_scheme_follow)
 
     res_usr1 = open_sql(sql_check_usr1)  # check if exists
     res_usr2 = open_sql(sql_check_usr2)
-
-    sql_scheme_follow = {
-        'columns_names': ['follower', 'followee'],
-        'columns_values': [res_usr1['id'], res_usr2['id']],
-        'table': 'Followers'
-    }
-    sql_check_follow = build_sql_select_all_query(sql_scheme_follow)
     res_follow = open_sql(sql_check_follow)
 
     if res_usr1 and res_usr2 and res_follow:

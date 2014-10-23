@@ -30,11 +30,6 @@ def get_details_post(data):
     if not res:
         code = 1
     else:
-        user_data = {'user_id': [res['user'], ], 'user': [None, ]}
-
-        user_resp = get_details_user(user_data, by_id=True)
-
-        res['user'] = user_resp['response']['email']
 
         if related:
 
@@ -42,6 +37,8 @@ def get_details_post(data):
             forum_resp = get_details_forum(forum_data)
             res['forum'] = forum_resp['response']
 
+            user_data = {'user': [res['user'], ]}
+            user_resp = get_details_user(user_data)
             res['user'] = user_resp['response']
 
             thread_data = {'thread': [res['thread'], ]}

@@ -32,11 +32,11 @@ def remove_thread(data):
             'condition': {'thread': thread},
             'table': 'Post'
         }
+
         sql1 = build_sql_update_query(sql_scheme)
         sql2 = build_sql_update_query(sql_scheme2)
 
         exec_sql([sql1, sql2], multi=True)
-
     if not res:
         code = 1
 

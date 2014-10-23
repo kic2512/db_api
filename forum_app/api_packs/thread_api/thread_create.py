@@ -17,9 +17,7 @@ def create_thread(data):
     message = data['message']
     slug = data['slug']
 
-    user = data['user']
-    usr_details = get_details_user({'user': [user, ]})['response']
-    usr_id = usr_details['id']
+    email = data['user']
 
     if 'isDeleted' in data:
         isdeleted = data['isDeleted']
@@ -39,7 +37,7 @@ def create_thread(data):
     if not res:
         sql_scheme = {
             'columns_names': ['forum', 'title', 'isClosed', 'user', 'date', 'message', 'slug', 'isDeleted'],
-            'columns_values': [forum, title, int(isclosed), usr_id, date, message, slug, int(isdeleted)],
+            'columns_values': [forum, title, int(isclosed), email, date, message, slug, int(isdeleted)],
             'table': 'Thread'
         }
         sql = build_sql_insert_query(sql_scheme)

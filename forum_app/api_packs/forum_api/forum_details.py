@@ -28,13 +28,8 @@ def get_details_forum(data):
     if not res:
         code = 2
     else:
-
-        sql = 'select * from User where id = %s' % res['user']
-        usr = open_sql(sql)
-        res['user'] = usr['email']
-
         if related:
-            user_data = {'user': [usr['email'], ]}
+            user_data = {'user': [res['user'], ]}
             user_resp = get_details_user(user_data)
             res['user'] = user_resp['response']
 

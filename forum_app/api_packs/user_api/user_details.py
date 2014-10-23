@@ -7,7 +7,6 @@ from forum_app.api_packs.make_response.make_response import make_response
 
 
 def get_details_user(data, by_id=False):
-
     code = 0
     keys = []
     values = []
@@ -34,55 +33,50 @@ def get_details_user(data, by_id=False):
     else:
         sql_scheme_get_followers = {
             'columns_names': ['followee', 'isDeleted'],
-            'columns_values': [res['id'], 0],
+            'columns_values': [res['email'], 0],
             'table': 'Followers'
         }
 
         sql_scheme_get_following = {
             'columns_names': ['follower', 'isDeleted'],
-            'columns_values': [res['id'], 0],
+            'columns_values': [res['email'], 0],
             'table': 'Followers'
         }
 
-        sql_get_followers_usr1 = build_sql_select_all_query(sql_scheme_get_followers, what=' id ')
-        sql_get_following_usr1 = build_sql_select_all_query(sql_scheme_get_following, what=' id ')
+        sql_get_followers_usr1 = build_sql_select_all_query(sql_scheme_get_followers, what='follower')
+        sql_get_following_usr1 = build_sql_select_all_query(sql_scheme_get_following, what='followee')
 
-        followers_id = open_sql_all(sql_get_followers_usr1)
-        following_id = open_sql_all(sql_get_following_usr1)
+        followers = open_sql_all(sql_get_followers_usr1)
+        following = open_sql_all(sql_get_following_usr1)
 
         sql_scheme_get_subscriptions = {
-            'columns_names': ['user'],
-            'columns_values': [res['id']],
+            'columns_names': ['user', 'isDeleted'],
+            'columns_values': [res['email'], 0],
             'table': 'Subscribe'
         }
         sql_get_subscriptions = build_sql_select_all_query(sql_scheme_get_subscriptions, what=' thread ')
 
         subscriptions = open_sql_all(sql_get_subscriptions)
 
-        followers_list = []
-        following_list = []
-        subscriptions_list = []
+    followers_list = []
+    following_list = []
+    subscriptions_list = []
 
-        if followers_id:
-            for x in followers_id:
-                user_data = {'user_id': [x['id'], ], 'user': [None, ]}
+    if followers:
+        for x in followers:
+            followers_list.append(x['follower'])
 
-                user_resp = get_details_user(user_data, by_id=True)['response']
-                followers_list.append(user_resp['email'])
+    if following:
+        for x in following:
+            following_list.append(x['followee'])
 
-        if following_id:
-            for x in following_id:
-                user_data = {'user_id': [x['id'], ], 'user': [None, ]}
-                user_resp = get_details_user(user_data, by_id=True)['response']
-                following_list.append(user_resp['email'])
+    if subscriptions:
+        for x in subscriptions:
+            subscriptions_list.append(x['thread'])
 
-        if subscriptions:
-            for x in subscriptions:
-                subscriptions_list.append(x['thread'])
-
-        keys = ['about', 'email', 'followers', 'following', 'id', 'isAnonymous', 'name', 'subscriptions', 'username']
-        values = [res['about'], res['email'], followers_list, following_list, int(res['id']), bool(res['isAnonymous']), res['name'],
-                  subscriptions_list, res['username']]
+    keys = ['about', 'email', 'followers', 'following', 'id', 'isAnonymous', 'name', 'subscriptions', 'username']
+    values = [res['about'], res['email'], followers_list, following_list, int(res['id']), bool(res['isAnonymous']),
+              res['name'], subscriptions_list, res['username']]
 
     resp_dict = make_response(keys, values, code)
 

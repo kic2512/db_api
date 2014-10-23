@@ -12,12 +12,9 @@ def subscribe_thread(data):
     thread_id = data['thread']
     email = data['user']
 
-    usr_details = get_details_user({'user': [email, ]})['response']
-    usr_id = usr_details['id']
-
     sql_scheme = {
         'columns_names': ['thread', 'user'],
-        'columns_values': [thread_id, usr_id],
+        'columns_values': [thread_id, email],
         'table': 'Subscribe'
     }
 
@@ -28,7 +25,7 @@ def subscribe_thread(data):
     if not res:
         sql_scheme = {
             'columns_names': ['thread', 'user'],
-            'columns_values': [thread_id, usr_id],
+            'columns_values': [thread_id, email],
             'table': 'Subscribe'
         }
         sql = build_sql_insert_query(sql_scheme)
@@ -45,4 +42,3 @@ def subscribe_thread(data):
     resp_dict = make_response(keys, values, code)
 
     return flask.jsonify(resp_dict)
-
