@@ -6,4 +6,4 @@ db_api
 Студент: Илья Кравцов</b>
 
 Реализация API к базе данных проекта «Форумы».</b>
-Подробнее <a href='https://github.com/s-stupnikov/technopark-db-api'>здесь</a>
+Подробнее <a href='https://github.com/s-stupnikov/technopark-db-api' target='blank'>здесь</a>
