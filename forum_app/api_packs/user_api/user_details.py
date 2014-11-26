@@ -10,6 +10,9 @@ def get_details_user(data, by_id=False):
     code = 0
     keys = []
     values = []
+    followers = []
+    following = []
+    subscriptions = []
 
     email = data['user'][0]
     col_name = 'email'
@@ -75,9 +78,10 @@ def get_details_user(data, by_id=False):
         for x in subscriptions:
             subscriptions_list.append(x['thread'])
 
-    keys = ['about', 'email', 'followers', 'following', 'id', 'isAnonymous', 'name', 'subscriptions', 'username']
-    values = [res['about'], res['email'], followers_list, following_list, int(res['id']), bool(res['isAnonymous']),
-              res['name'], subscriptions_list, res['username']]
+    if followers_list or following_list or subscriptions_list:
+        keys = ['about', 'email', 'followers', 'following', 'id', 'isAnonymous', 'name', 'subscriptions', 'username']
+        values = [res['about'], res['email'], followers_list, following_list, int(res['id']), bool(res['isAnonymous']),
+                  res['name'], subscriptions_list, res['username']]
 
     resp_dict = make_response(keys, values, code)
 

@@ -8,6 +8,7 @@ from forum_app.api_packs.make_response.make_response import make_response
 
 def create_user(data):
     code = 0
+
     username = data['username']
     about = data['about']
     name = data['name']
@@ -17,7 +18,7 @@ def create_user(data):
         isanon = data['isAnonymous']
     else:
         isanon = 'False'
-    # sql_check = "select id, username, about, name, email, isAnonymous from User where email = '%s' " % email
+
     sql_scheme = {
         'columns_names': ['email'],
         'columns_values': [email],

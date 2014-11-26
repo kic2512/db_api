@@ -8,10 +8,11 @@ from forum_app.api_packs.user_api.user_details import get_details_user
 
 
 def unfollow_user(data):
-    code = 0
+    code = 1
 
     keys = []
     values = []
+    resp_dict = {'code': code, 'response': []}
 
     email_1 = data['follower']
     email_2 = data['followee']

@@ -37,7 +37,7 @@ def forum_list_threads():
 
 
 def forum_list_users():
-    host = "http://127.0.0.1/db/api/forum/listUsers/?limit=2&forum=forumwithsufficientlylargename&since_id=10&order=asc"
+    host = "http://127.0.0.1/db/api/forum/listPosts/?forum=forumwithsufficientlylargename&since=2014-01-02+00%3A00%3A00&limit=2&order=asc&related=thread"
     response = requests.get(host)
     print response.text
 
@@ -72,19 +72,19 @@ def user_unfollow():
 
 
 def user_details():
-    host = "http://127.0.0.1/db/api/user/details/?user=example3@mail.ru"
+    host = "http://127.0.0.1/db/api/user/details/?user=bg57@bk.ru"
     response = requests.get(host)
     print response.text
 
 
 def user_list_followers():
-    host = "http://127.0.0.1/db/api/user/listFollowers/?limit=3&user=example3@mail.ru&since_id=1&order=desc"
+    host = "http://127.0.0.1/db/api/user/listFollowers/?limit=97&user=k94i%40bk.ru&order=asc"
     response = requests.get(host)
     print response.text
 
 
 def user_list_following():
-    host = "http://127.0.0.1/db/api/user/listFollowing/?limit=3&user=example3@mail.ru&since_id=1&order=desc"
+    host = "http://127.0.0.1/db/api/user/listFollowing/?limit=49&user=95duo%40yahoo.com&order=desc"
     response = requests.get(host)
     print response.text
 
@@ -113,13 +113,14 @@ def thread_update():
 
 
 def thread_get_list_posts():
-    host = "http://127.0.0.1/db/api/thread/listPosts/?order=desc&thread=1"
+    host = "http://127.0.0.1/db/api/thread/listPosts/?limit=84&order=desc&thread=3"
     response = requests.get(host)
     print response.text
 
 
 def thread_details():
-    host = "http://127.0.0.1/db/api/thread/details/?thread=4&related=forum&related=user"
+    host = "http://127.0.0.1/db/api/thread/details/?related=forum&thread=5&related=user"
+    #host = "http://127.0.0.1/db/api/thread/details/?related=user&thread=5"
     response = requests.get(host)
     print response.text
 
@@ -220,6 +221,4 @@ def clear():
     response = requests.post(host, data=json.dumps(d), headers={'content-type': 'application/json'})
     print response.text
 
-
-post_create()
-post_details()
+thread_get_list_posts()

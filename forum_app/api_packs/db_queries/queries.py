@@ -11,10 +11,10 @@ def exec_sql(sql, multi=False):
     if not multi:
         cursor.execute(sql)
     else:
-        cursor.execute("START TRANSACTION;")
+        cursor.execute("START TRANSACTION")
         for s in sql:
             cursor.execute(s)
-        cursor.execute("COMMIT;")
+        cursor.execute("COMMIT")
 
     database.commit()
     database.close()

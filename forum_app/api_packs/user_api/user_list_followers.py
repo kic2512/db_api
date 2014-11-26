@@ -4,7 +4,9 @@ from forum_app.api_packs.user_api.user_details import get_details_user
 
 def get_user_list_followers(data):
     code = 0
+
     user_info = get_details_user(data)['response']
+    user_code = get_details_user(data)['code']
 
     since = data.get('since_id', [0, ])[0]
     limit = data.get('limit', [0, ])[0]
@@ -15,7 +17,8 @@ def get_user_list_followers(data):
 
     followers_list = []
     filter2 = []
-    if user_info:
+
+    if user_code == 0:
         for x in user_info['followers']:
             usr_details = get_details_user({'user': [x, ]})
             usr_details = usr_details['response']
@@ -27,7 +30,7 @@ def get_user_list_followers(data):
         if limit:
             filter2 = filter2[0:int(limit)]
     else:
-        code = 1
+        code = user_code
 
     res_dict = {'code': code, 'response': filter2}
     return res_dict

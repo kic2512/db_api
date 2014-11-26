@@ -10,6 +10,8 @@ from forum_app.api_packs.user_api.user_details import get_details_user
 
 def get_details_thread(data):
     code = 0
+    keys = []
+    values = []
 
     thread_id = data.get('thread', None)[0]
 

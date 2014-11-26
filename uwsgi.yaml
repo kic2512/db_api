@@ -19,3 +19,4 @@ uwsgi:
     touch-reload: /home/kic/flask_proj/uwsgi
     callable: forum
     env: python
+    websockets-max-size: 65535
