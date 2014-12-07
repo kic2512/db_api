@@ -43,7 +43,7 @@ def forum_list_users():
 
 
 def user_create():
-    d = {'username': None, 'about': 'hello im user1', 'isAnonymous': True, 'name': 'John',
+    d = {'username': 'user1', 'about': 'hello im user1', 'isAnonymous': False, 'name': 'John',
          'email': 'example@mail.ru'}
     host = "http://127.0.0.1/db/api/user/create/"
     response = requests.post(host, data=json.dumps(d), headers={'content-type': 'application/json'})
@@ -72,7 +72,7 @@ def user_unfollow():
 
 
 def user_details():
-    host = "http://127.0.0.1/db/api/user/details/?user=bg57@bk.ru"
+    host = "http://127.0.0.1/db/api/user/details/?user=example@mail.ru"
     response = requests.get(host)
     print response.text
 
@@ -120,7 +120,7 @@ def thread_get_list_posts():
 
 def thread_details():
     host = "http://127.0.0.1/db/api/thread/details/?related=forum&thread=5&related=user"
-    #host = "http://127.0.0.1/db/api/thread/details/?related=user&thread=5"
+    # host = "http://127.0.0.1/db/api/thread/details/?related=user&thread=5"
     response = requests.get(host)
     print response.text
 
@@ -221,4 +221,5 @@ def clear():
     response = requests.post(host, data=json.dumps(d), headers={'content-type': 'application/json'})
     print response.text
 
-thread_get_list_posts()
+
+user_details()

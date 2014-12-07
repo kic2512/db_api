@@ -8,8 +8,10 @@ from forum_app.api_packs.make_response.make_response import make_response
 
 def get_details_user(data, by_id=False):
     code = 0
+
     keys = []
     values = []
+
     followers = []
     following = []
     subscriptions = []
@@ -62,23 +64,22 @@ def get_details_user(data, by_id=False):
 
         subscriptions = open_sql_all(sql_get_subscriptions)
 
-    followers_list = []
-    following_list = []
-    subscriptions_list = []
+        followers_list = []
+        following_list = []
+        subscriptions_list = []
 
-    if followers:
-        for x in followers:
-            followers_list.append(x['follower'])
+        if followers:
+            for x in followers:
+                followers_list.append(x['follower'])
 
-    if following:
-        for x in following:
-            following_list.append(x['followee'])
+        if following:
+            for x in following:
+                following_list.append(x['followee'])
 
-    if subscriptions:
-        for x in subscriptions:
-            subscriptions_list.append(x['thread'])
+        if subscriptions:
+            for x in subscriptions:
+                subscriptions_list.append(x['thread'])
 
-    if followers_list or following_list or subscriptions_list:
         keys = ['about', 'email', 'followers', 'following', 'id', 'isAnonymous', 'name', 'subscriptions', 'username']
         values = [res['about'], res['email'], followers_list, following_list, int(res['id']), bool(res['isAnonymous']),
                   res['name'], subscriptions_list, res['username']]

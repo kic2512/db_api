@@ -71,9 +71,10 @@ def create_post(data):
         sql_post = build_sql_insert_query(sql_scheme)
         sql_thread = " update Thread  set posts=posts+1 where id = %s ;" % thread
 
-        exec_message1 = exec_sql([sql_post, sql_thread], multi=True)
+        exec_message2 = exec_sql(sql_thread)
+        exec_message1 = exec_sql(sql_post)
 
-        if exec_message1 == 0:
+        if exec_message1 == 0 and exec_message2 == 0:
             res = open_sql(sql_check)
         else:
             code = 4
