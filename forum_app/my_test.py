@@ -221,5 +221,5 @@ def clear():
     response = requests.post(host, data=json.dumps(d), headers={'content-type': 'application/json'})
     print response.text
 
-
-user_details()
+thread_remove()
+thread_restore()

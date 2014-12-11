@@ -19,24 +19,44 @@ def remove_thread(data):
     sql_check = build_sql_select_all_query(sql_scheme)
     res = open_sql(sql_check)
     if res:
-        sql_scheme = {
-            'columns_names': ['isDeleted'],
-            'columns_values': [1],
+        sql_scheme_posts_count = {
+            'columns_names': ['thread'],
+            'columns_values': [thread],
+            'table': 'Post'
+        }
+
+        sql_posts_count = build_sql_select_all_query(sql_scheme_posts_count)
+        res_posts = open_sql(sql_posts_count)
+
+        posts_count = 0
+        if res_posts:
+            posts_count = len([res_posts])
+
+        """
+        TODO
+        sql_scheme_thread_up = {
+            'columns_names': ['isDeleted', 'posts'],
+            'columns_values': [1, 'posts-'+str(posts_count)],
             'condition': {'id': thread},
             'table': 'Thread'
         }
+        """
 
-        sql_scheme2 = {
+        sql_thread_up = 'update Thread set  posts=0 , isDeleted=1  where  id = %s' % thread
+        exec_sql(sql_thread_up)
+
+        sql_scheme_post_rm = {
             'columns_names': ['isDeleted'],
             'columns_values': [1],
             'condition': {'thread': thread},
             'table': 'Post'
         }
+        sql_post_rm = build_sql_update_query(sql_scheme_post_rm)
+        exec_sql(sql_post_rm)
 
-        sql1 = build_sql_update_query(sql_scheme)
-        sql2 = build_sql_update_query(sql_scheme2)
+        sql_check = build_sql_select_all_query(sql_scheme)
+        res = open_sql(sql_check)
 
-        exec_sql([sql1, sql2], multi=True)
     if not res:
         code = 1
 

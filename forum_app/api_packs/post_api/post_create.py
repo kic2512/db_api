@@ -50,8 +50,8 @@ def create_post(data):
     # sql_check = "select * from Post where user = '%s' and date= '%s' " % (user, date)
 
     sql_scheme = {
-        'columns_names': ['user', 'date', 'message'],
-        'columns_values': [email, date, message],
+        'columns_names': ['user', 'date'],
+        'columns_values': [email, date],
         'table': 'Post'
     }
     sql_check = build_sql_select_all_query(sql_scheme)

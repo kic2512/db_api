@@ -43,7 +43,9 @@ def get_details_thread(data):
 
         keys = ['id', 'date', 'dislikes', 'forum', 'isClosed', 'isDeleted', 'likes', 'message', 'points', 'posts',
                 'slug', 'title', 'user']
-        
+
+        #if res['isDeleted']:
+        #    res['posts'] = 0
         values = [res['id'], str(res['date']), res['dislikes'], res['forum'], bool(res['isClosed']),
                   bool(res['isDeleted']), res['likes'], res['message'], res['points'], res['posts'], res['slug'],
                   res['title'], res['user']]
