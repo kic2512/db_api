@@ -19,6 +19,9 @@ def vote_post(data):
     post_id = data['post']
     vote = data['vote']
 
+    resp_keys = []
+    resp_values = []
+
     vote_column = determinate_vote_column(vote)
 
     sql_scheme = {
@@ -39,14 +42,13 @@ def vote_post(data):
 
         res = open_sql(sql_check)  # refresh
 
+        resp_keys = ['date', 'forum', 'id', 'isApproved', 'isDeleted', 'isEdited', 'isHighlighted', 'isSpam', 'message',
+                     'parent', 'thread', 'user']
+        resp_values = [str(res['date']), res['forum'], res['id'], bool(res['isApproved']), bool(res['isDeleted']),
+                       bool(res['isEdited']), bool(res['isHighlighted']), bool(res['isSpam']), res['message'],
+                       res['parent'], res['thread'], res['user']]
     else:
         code = 1
-
-    resp_keys = ['date', 'forum', 'id', 'isApproved', 'isDeleted', 'isEdited', 'isHighlighted', 'isSpam', 'message',
-                 'parent', 'thread', 'user']
-    resp_values = [str(res['date']), res['forum'], res['id'], bool(res['isApproved']), bool(res['isDeleted']),
-                   bool(res['isEdited']), bool(res['isHighlighted']), bool(res['isSpam']), res['message'],
-                   res['parent'], res['thread'], res['user']]
 
     resp_dict = make_response(resp_keys, resp_values, code)
     return flask.jsonify(resp_dict)

@@ -15,6 +15,8 @@ def determinate_vote_column(val):
 
 def vote_thread(data):
     code = 0
+    keys = []
+    values = []
 
     thread_id = data['thread']
     vote = data['vote']
@@ -38,14 +40,12 @@ def vote_thread(data):
         exec_sql([sql1, sql2], multi=True)
 
         res = open_sql(sql_check)  # refresh
-
+        keys = ['id', 'date', 'forum', 'isClosed', 'isDeleted', 'message', 'slug', 'title', 'user', 'likes', 'dislikes',
+                'points']
+        values = [res['id'], str(res['date']), res['forum'], bool(res['isClosed']), bool(res['isDeleted']),
+                  res['message'], res['slug'], res['title'], res['user'], res['likes'], res['dislikes'], res['points']]
     else:
         code = 1
-
-    keys = ['id', 'date', 'forum', 'isClosed', 'isDeleted', 'message', 'slug', 'title', 'user', 'likes', 'dislikes',
-            'points']
-    values = [res['id'], str(res['date']), res['forum'], bool(res['isClosed']), bool(res['isDeleted']), res['message'],
-              res['slug'], res['title'], res['user'], res['likes'], res['dislikes'], res['points']]
 
     resp_dict = make_response(keys, values, code)
     return flask.jsonify(resp_dict)

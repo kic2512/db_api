@@ -78,7 +78,7 @@ def user_details():
 
 
 def user_list_followers():
-    host = "http://127.0.0.1/db/api/user/listFollowers/?limit=97&user=k94i%40bk.ru&order=asc"
+    host = "http://127.0.0.1/db/api/user/listFollowers/?limit=91&user=gz%40ua.ru&order=desc"
     response = requests.get(host)
     print response.text
 
@@ -221,5 +221,4 @@ def clear():
     response = requests.post(host, data=json.dumps(d), headers={'content-type': 'application/json'})
     print response.text
 
-thread_remove()
-thread_restore()
+user_list_followers()
