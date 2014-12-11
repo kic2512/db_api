@@ -1,53 +1,60 @@
 __author__ = 'kic'
 import MySQLdb
-
+import mysql.connector
 from forum_app.settings import DB
 
 
 def exec_sql(sql, multi=False):
-    database = MySQLdb.connect(user=DB['USER'], host=DB['HOST'], passwd=DB['PASSWORD'], db=DB['NAME'], charset='utf8')
-    cursor = database.cursor()
+    database = mysql.connector.connect(user=DB['USER'], host=DB['HOST'], passwd=DB['PASSWORD'], db=DB['NAME'], charset='utf8')
+    try:
+        cursor = database.cursor()
+        if not multi:
+            cursor.execute(sql)
+        else:
+            cursor.execute("START TRANSACTION")
+            for s in sql:
+                cursor.execute(s)
+            cursor.execute("COMMIT")
 
-    if not multi:
-        cursor.execute(sql)
-    else:
-        cursor.execute("START TRANSACTION")
-        for s in sql:
-            cursor.execute(s)
-        cursor.execute("COMMIT")
+        database.commit()
 
-    database.commit()
-    database.close()
+    finally:
+        database.close()
+
     return 0
 
 
 def open_sql(sql):
-    database = MySQLdb.connect(user=DB['USER'], host=DB['HOST'], passwd=DB['PASSWORD'], db=DB['NAME'], charset='utf8')
-    cursor = database.cursor()
-    cursor.execute(sql)
-    db_resp = cursor.fetchall()
+    database = mysql.connector.connect(user=DB['USER'], host=DB['HOST'], passwd=DB['PASSWORD'], db=DB['NAME'], charset='utf8')
+    try:
+        cursor = database.cursor()
+        cursor.execute(sql)
+        db_resp = cursor.fetchall()
+        result = None
 
-    result = None
-    if db_resp:
-        columns = [item[0] for item in cursor.description]
-        result = dict(zip(columns, db_resp[0]))
+        if db_resp:
+            columns = [item[0] for item in cursor.description]
+            result = dict(zip(columns, db_resp[0]))
+    finally:
+        database.close()
 
-    database.close()
     return result
 
 
 def open_sql_all(sql):
-    database = MySQLdb.connect(user=DB['USER'], host=DB['HOST'], passwd=DB['PASSWORD'], db=DB['NAME'], charset='utf8')
-    cursor = database.cursor()
-    cursor.execute(sql)
-    db_resp = cursor.fetchall()
+    database = mysql.connector.connect(user=DB['USER'], host=DB['HOST'], passwd=DB['PASSWORD'], db=DB['NAME'], charset='utf8')
+    try:
+        cursor = database.cursor()
+        cursor.execute(sql)
+        db_resp = cursor.fetchall()
 
-    result = []
-    if db_resp:
-        columns = [item[0] for item in cursor.description]
-        for x in db_resp:
-            result.append(dict(zip(columns, x)))
-    database.close()
+        result = []
+        if db_resp:
+            columns = [item[0] for item in cursor.description]
+            for x in db_resp:
+                result.append(dict(zip(columns, x)))
+    finally:
+        database.close()
     return result
 
 
