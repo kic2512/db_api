@@ -9,6 +9,11 @@ from forum_app.api_packs.user_api.user_details import get_details_user
 
 def create_forum(data):
     code = 0
+
+    if not data:
+        resp_dict = make_response([], [], 3)
+        return flask.jsonify(resp_dict)
+
     name = data['name'].encode("utf-8")
     shn = data['short_name'].encode("utf-8")
     email = data['user'].encode("utf-8")

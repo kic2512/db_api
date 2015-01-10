@@ -9,6 +9,10 @@ from forum_app.api_packs.make_response.make_response import make_response
 def create_user(data):
     code = 0
 
+    if not data:
+        resp_dict = make_response([], [], 3)
+        return flask.jsonify(resp_dict)
+
     username = data['username']
     about = data['about']
     name = data['name']
@@ -49,6 +53,6 @@ def create_user(data):
     keys = ['id', 'username', 'about', 'name', 'email', 'isAnonymous']
     values = [int(res['id']), res['username'], res['about'], res['name'], res['email'], bool(res['isAnonymous'])]
 
-    resp_dict = make_response(keys, values, code)
+    #resp_dict = make_response(keys, values, code)  add this after load
 
-    return flask.jsonify(resp_dict)
+    return flask.jsonify({'q':1}) #flask.jsonify(resp_dict)    add this after load

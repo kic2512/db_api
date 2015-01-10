@@ -8,6 +8,11 @@ from forum_app.api_packs.make_response.make_response import make_response
 
 def create_thread(data):
     code = 0
+
+    if not data:
+        resp_dict = make_response([], [], 3)
+        return flask.jsonify(resp_dict)
+
     forum = data['forum']
     title = data['title']
 

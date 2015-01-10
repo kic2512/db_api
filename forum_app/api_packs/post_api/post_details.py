@@ -15,15 +15,19 @@ def get_details_post(data):
     resp_values = []
 
     post_id = data.get('post', None)[0]
-
     related = data.get('related', None)
+
+    attributes = ' * '
+    only_mp = data.get('only_mp', None)
+    if only_mp:
+        attributes = ' mp '
 
     sql_scheme = {
         'columns_names': ['id'],
         'columns_values': [post_id],
         'table': 'Post'
     }
-    sql_check = build_sql_select_all_query(sql_scheme)
+    sql_check = build_sql_select_all_query(sql_scheme, what=attributes)
 
     res = open_sql(sql_check)  # check if exists
 
@@ -32,7 +36,6 @@ def get_details_post(data):
     else:
 
         if related:
-
             forum_data = {'forum': [res['forum']], }
             forum_resp = get_details_forum(forum_data)
             res['forum'] = forum_resp['response']
@@ -45,14 +48,18 @@ def get_details_post(data):
             thread_resp = get_details_thread(thread_data)
             res['thread'] = thread_resp['response']
 
-        resp_keys = ['date', 'forum', 'id', 'isApproved', 'isDeleted', 'isEdited', 'isHighlighted', 'isSpam', 'message',
-                     'parent', 'thread', 'user', 'likes', 'dislikes', 'points']
+        if not only_mp:
+            resp_keys = ['date', 'forum', 'id', 'isApproved', 'isDeleted', 'isEdited', 'isHighlighted', 'isSpam',
+                         'message', 'parent', 'thread', 'user', 'likes', 'dislikes', 'points']
 
-        resp_values = [str(res['date']), res['forum'], int(post_id), bool(res['isApproved']), bool(res['isDeleted']),
-                       bool(res['isEdited']), bool(res['isHighlighted']), bool(res['isSpam']), res['message'],
-                       res['parent'], res['thread'], res['user'], res['likes'], res['dislikes'], res['points']]
+            resp_values = [str(res['date']), res['forum'], int(post_id), bool(res['isApproved']),
+                           bool(res['isDeleted']), bool(res['isEdited']), bool(res['isHighlighted']),
+                           bool(res['isSpam']), res['message'], res['parent'], res['thread'], res['user'], res['likes'],
+                           res['dislikes'], res['points']]
+        else:
+            resp_keys = ['mp']
+            resp_values = [res['mp']]
 
     resp_dict = make_response(resp_keys, resp_values, code)
 
     return resp_dict
-

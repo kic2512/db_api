@@ -5,7 +5,8 @@ from forum_app.settings import DB
 
 
 def exec_sql(sql, multi=False):
-    database = mysql.connector.connect(user=DB['USER'], host=DB['HOST'], passwd=DB['PASSWORD'], db=DB['NAME'], charset='utf8')
+    database = mysql.connector.connect(user=DB['USER'], host=DB['HOST'], passwd=DB['PASSWORD'], db=DB['NAME'],
+                                       charset='utf8', connection_timeout=15)
     try:
         cursor = database.cursor()
         if not multi:
@@ -25,7 +26,8 @@ def exec_sql(sql, multi=False):
 
 
 def open_sql(sql):
-    database = mysql.connector.connect(user=DB['USER'], host=DB['HOST'], passwd=DB['PASSWORD'], db=DB['NAME'], charset='utf8')
+    database = mysql.connector.connect(user=DB['USER'], host=DB['HOST'], passwd=DB['PASSWORD'], db=DB['NAME'],
+                                       charset='utf8', connection_timeout=15)
     try:
         cursor = database.cursor()
         cursor.execute(sql)
@@ -42,7 +44,8 @@ def open_sql(sql):
 
 
 def open_sql_all(sql):
-    database = mysql.connector.connect(user=DB['USER'], host=DB['HOST'], passwd=DB['PASSWORD'], db=DB['NAME'], charset='utf8')
+    database = mysql.connector.connect(user=DB['USER'], host=DB['HOST'], passwd=DB['PASSWORD'], db=DB['NAME'],
+                                       charset='utf8', connection_timeout=15)
     try:
         cursor = database.cursor()
         cursor.execute(sql)

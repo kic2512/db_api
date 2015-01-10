@@ -16,6 +16,7 @@ def get_thread_list_posts(data):
     thread_id = data.get('thread')[0]
 
     since = data.get('since', [0, ])[0]
+    larger = {'date': since}
 
     limit = data.get('limit', [0, ])[0]
 
@@ -31,7 +32,7 @@ def get_thread_list_posts(data):
         'columns_values': [thread_id],
         'table': 'Thread'
     }
-    sql_check = build_sql_select_all_query(sql_scheme)
+    sql_check = build_sql_select_all_query(sql_scheme, what=' id ')
 
     res = open_sql(sql_check)  # check if exists
 
@@ -44,11 +45,8 @@ def get_thread_list_posts(data):
             'table': 'Post'
         }
 
-        larger = {'date': since}
-
         sql = build_sql_select_all_query(sql_scheme, is_desc=is_desc, limit=limit, larger=larger, what=' id,user ')
 
-        #sql = 'select id,user from Post where thread = %s ' % thread_id
         posts_list = open_sql_all(sql)
 
     final_resp = []

@@ -12,6 +12,11 @@ from forum_app.api_packs.post_api.post_details import get_details_post
 
 def create_post(data):
     code = 0
+
+    if not data:
+        resp_dict = make_response([], [], 3)
+        return flask.jsonify(resp_dict)
+
     date = data['date']
     thread = data['thread']
     message = data['message']
@@ -47,25 +52,28 @@ def create_post(data):
     else:
         isdeleted = 'False'
 
-    # sql_check = "select * from Post where user = '%s' and date= '%s' " % (user, date)
-
-    sql_scheme = {
-        'columns_names': ['user', 'date'],
-        'columns_values': [email, date],
-        'table': 'Post'
-    }
-    sql_check = build_sql_select_all_query(sql_scheme)
-    #res = open_sql(sql_check)  # check if exists
     res = False
     if not res:
+        if parent:
+            parent_data = {'post': [parent, ], 'only_mp': [True, ]}
+            mp_parent = get_details_post(parent_data)['response'].get('mp')
+            sql_mp = "select count(*) as count from Post where mp like'" + mp_parent + "._'"
+            sim_count = open_sql(sql_mp).get('count')
+            suffix = sim_count + 1
+            mp = str(mp_parent) + '.' + str(suffix)
+        else:
+            sql_mp = "select count(*) as count from Post where parent is NULL "
+            sim_count = open_sql(sql_mp).get('count')
+            suffix = sim_count + 1
+            mp = str(suffix)
 
         sql_scheme = {
             'columns_names': ['date', 'thread', 'message', 'user', 'forum', 'parent',
                               'isapproved', 'ishighlighted', 'isedited', 'isspam',
-                              'isdeleted'],
+                              'isdeleted', 'mp'],
             'columns_values': [date, thread, message, email, forum, parent,
                                int(isapproved), int(ishighlighted), int(isedited), int(isspam),
-                               int(isdeleted)],
+                               int(isdeleted), mp],
             'table': 'Post'
         }
         sql_post = build_sql_insert_query(sql_scheme)
@@ -75,14 +83,20 @@ def create_post(data):
         exec_message1 = exec_sql(sql_post)
 
         if exec_message1 == 0 and exec_message2 == 0:
+            sql_scheme = {
+                'columns_names': ['user', 'date'],
+                'columns_values': [email, date],
+                'table': 'Post'
+            }
+            sql_check = build_sql_select_all_query(sql_scheme, what=' id ')
             res = open_sql(sql_check)
         else:
             code = 4
-    # return str(res)
+
     post_data = {'post': [int(res['id']), ]}
 
-    post_resp = get_details_post(post_data)
+    #post_resp = get_details_post(post_data)   add this after load
 
-    #resp_dict = post_resp['response']
+    #resp_dict = post_resp['response']         add this after load
 
-    return flask.jsonify(post_resp)
+    return flask.jsonify(post_data)
