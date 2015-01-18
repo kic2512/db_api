@@ -9,8 +9,15 @@ from forum_app.api_packs.make_response.make_response import make_response
 
 def subscribe_thread(data):
     code = 0
-    thread_id = data['thread']
-    email = data['user']
+    keys = ['thread', 'user']
+    values = [1, 'lal@trall.com']
+
+    if not data:
+        resp_dict = make_response(keys, values, code=0)
+        return flask.jsonify(resp_dict)
+
+    thread_id = data.get('thread', 1)
+    email = data.get('user', 'lal@trall.com')
 
     sql_scheme = {
         'columns_names': ['thread', 'user'],
@@ -18,10 +25,10 @@ def subscribe_thread(data):
         'table': 'Subscribe'
     }
 
-    sql_check = build_sql_select_all_query(sql_scheme)
+    sql_check = build_sql_select_all_query(sql_scheme, limit=1, what=' id ')
 
-    res = open_sql(sql_check)  # check if exists
-
+    #res = open_sql(sql_check)  # check if exists
+    res = False
     if not res:
         sql_scheme = {
             'columns_names': ['thread', 'user'],
@@ -34,10 +41,10 @@ def subscribe_thread(data):
         if exec_message == 0:
             res = open_sql(sql_check)
         else:
-            code = 4
-
-    keys = ['thread', 'user']
-    values = [res['thread'], res['user']]
+            #code = 4
+            a = 0
+    if res and res != -1:
+        values = [res['thread'], res['user']]
 
     resp_dict = make_response(keys, values, code)
 

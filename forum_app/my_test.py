@@ -11,7 +11,7 @@ def test_thread_list_posts():
 
 
 def forum_create():
-    d = {'name': u'\u0424\u043e\u0440\u0443\u043c \u0422\u0440\u0438', 'short_name': 'forum3',
+    d = {'name': u'70330spdspd', 'short_name': 'jduedkdkfl978390',
          'user': 'example@mail.ru'}
     host = "http://127.0.0.1/db/api/forum/create/"
     response = requests.post(host, data=json.dumps(d), headers={'content-type': 'application/json'})
@@ -43,8 +43,8 @@ def forum_list_users():
 
 
 def user_create():
-    d = {'username': 'user1', 'about': 'hello im user1', 'isAnonymous': False, 'name': 'John',
-         'email': 'example@mail.ru'}
+    d = {'username': 'ncdkdkkp994399', 'about': None, 'isAnonymous': True, 'name': None,
+         'email': u'jsoifmw93749s@fail.com'}
     host = "http://127.0.0.1/db/api/user/create/"
     response = requests.post(host, data=json.dumps(d), headers={'content-type': 'application/json'})
     print response.text
@@ -58,7 +58,7 @@ def user_update():
 
 
 def user_follow():
-    d = {"follower": "example@mail.ru", "followee": "richard.nixon@example.com"}
+    d = {"follower": "j8e3hd3@mail.ru", "followee": "ie83ndl@example.com"}
     host = "http://127.0.0.1/db/api/user/follow/"
     response = requests.post(host, data=json.dumps(d), headers={'content-type': 'application/json'})
     print response.text
@@ -90,16 +90,17 @@ def user_list_following():
 
 
 def thread_create():
-    d = {'forum': 'forum3', 'title': u'\u0422\u0440\u0435\u0434 \u0422\u0440\u0438', 'isClosed': False,
-         'user': 'example2@mail.ru', 'date': '2013-12-29 00:01:01', 'message': 'hey hey hey!', 'slug': 'thread3',
-         'isDeleted': False}
+    d = {'forum': u'xcdjnckdcjk9398342', 'title': u'ndnckdnckdj8837299', 'isClosed': False, 'user': u'xyh@ya.ru',
+         'date': '2013-11-24 07:57:22',
+         'message': u'5yl7 p1dn z5hc2wtm3 t3eifk6y qa mwz3u 7dqvb91 xqpnls9rzc xwho g42gfncz kmwfno oz atep70qvg i6yzgxfvh ln lze2tm8qsf 60sunxb y1uwramft zrcug42d0 uq5tazm 4q1dg3bx68',
+         'slug': u'4ty', 'isDeleted': False}
     host = "http://127.0.0.1/db/api/thread/create/"
     response = requests.post(host, data=json.dumps(d), headers={'content-type': 'application/json'})
     print response.text
 
 
 def thread_subscribe():
-    d = {'thread': '1', 'user': 'richard.nixon@example.com'}
+    d = {'thread': '5', 'user': 'ddsss@example.com'}
     host = "http://127.0.0.1/db/api/thread/subscribe/"
     response = requests.post(host, data=json.dumps(d), headers={'content-type': 'application/json'})
     print response.text
@@ -126,16 +127,17 @@ def thread_details():
 
 
 def post_create():
-    d = {'isApproved': False, 'user': 'example3@mail.ru', 'date': '2014-01-01 00:02:01',
-         'message': 'my message 3', 'isSpam': False, 'isHighlighted': False, 'forum': 'forum1', 'thread': 3,
-         'isDeleted': False, 'isEdited': True}
+    d = {'parent': None, 'forum': u'fds2b', 'thread': 2416, 'isApproved': True, 'isDeleted': True, 'isEdited': True,
+         'date': '2013-03-05 19:49:05',
+         'message': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam a lorem a leo porttitor tincidunt eget et urna. Aenean id lacinia dolor. Sed consequat ipsum at orci porta, sed condimentum dui elementum. Curabitur magna purus, sagittis in convallis ultrices, dignissim pharetra ipsum. In molestie, arcu id convallis blandit, felis metus suscipit justo, ut iaculis metus leo viverra felis. Donec a varius dolor. Cras tempor, nisl in dapibus cursus, risus ligula ultricies nisi, a sagittis justo lorem et odio. Mauris eu scelerisque tellus. Duis luctus enim vel porttitor convallis. Phasellus pretium mi vitae ullamcorper pretium. Vivamus sollicitudin, risus a volutpat condimentum',
+         'isSpam': True, 'isHighlighted': True, 'user': u'ybo@yahoo.com'}
     host = "http://127.0.0.1/db/api/post/create/"
     response = requests.post(host, data=json.dumps(d), headers={'content-type': 'application/json'})
     print response.text
 
 
 def post_details():
-    host = "http://127.0.0.1/db/api/post/details/?post=2&related=thread&related=forum&related=user"
+    host = "http://127.0.0.1/db/api/post/details/?post=1&related=thread&related=forum&related=user"
     response = requests.get(host)
     print response.text
 
@@ -221,4 +223,12 @@ def clear():
     response = requests.post(host, data=json.dumps(d), headers={'content-type': 'application/json'})
     print response.text
 
-user_list_followers()
+
+user_create()
+forum_create()
+thread_create()
+post_create()
+user_follow()
+user_follow()
+thread_subscribe()
+thread_subscribe()

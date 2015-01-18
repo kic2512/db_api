@@ -5,9 +5,12 @@ from forum_app.settings import DB
 
 
 def exec_sql(sql, multi=False):
-    database = mysql.connector.connect(user=DB['USER'], host=DB['HOST'], passwd=DB['PASSWORD'], db=DB['NAME'],
-                                       charset='utf8', connection_timeout=15)
+    result = None
+    database = None
     try:
+        database = mysql.connector.connect(user=DB['USER'], host=DB['HOST'], passwd=DB['PASSWORD'], db=DB['NAME'],
+                                           charset='utf8', connection_timeout=15)
+
         cursor = database.cursor()
         if not multi:
             cursor.execute(sql)
@@ -18,46 +21,57 @@ def exec_sql(sql, multi=False):
             cursor.execute("COMMIT")
 
         database.commit()
-
-    finally:
         database.close()
-
-    return 0
-
-
-def open_sql(sql):
-    database = mysql.connector.connect(user=DB['USER'], host=DB['HOST'], passwd=DB['PASSWORD'], db=DB['NAME'],
-                                       charset='utf8', connection_timeout=15)
-    try:
-        cursor = database.cursor()
-        cursor.execute(sql)
-        db_resp = cursor.fetchall()
-        result = None
-
-        if db_resp:
-            columns = [item[0] for item in cursor.description]
-            result = dict(zip(columns, db_resp[0]))
-    finally:
-        database.close()
+    except mysql.connector.Error as err:
+        result = -1
+        if database:
+            database.close()
 
     return result
 
 
-def open_sql_all(sql):
-    database = mysql.connector.connect(user=DB['USER'], host=DB['HOST'], passwd=DB['PASSWORD'], db=DB['NAME'],
-                                       charset='utf8', connection_timeout=15)
+def open_sql(sql):
+    result = None
+    database = None
     try:
+        database = mysql.connector.connect(user=DB['USER'], host=DB['HOST'], passwd=DB['PASSWORD'], db=DB['NAME'],
+                                           charset='utf8', connection_timeout=15)
+
         cursor = database.cursor()
         cursor.execute(sql)
         db_resp = cursor.fetchall()
 
-        result = []
+        if db_resp:
+            columns = [item[0] for item in cursor.description]
+            result = dict(zip(columns, db_resp[0]))
+        database.close()
+    except mysql.connector.Error as err:
+        result = -1
+        if database:
+            database.close()
+    return result
+
+
+def open_sql_all(sql):
+    result = []
+    database = None
+    try:
+        database = mysql.connector.connect(user=DB['USER'], host=DB['HOST'], passwd=DB['PASSWORD'], db=DB['NAME'],
+                                           charset='utf8', connection_timeout=15)
+        cursor = database.cursor()
+        cursor.execute(sql)
+        db_resp = cursor.fetchall()
+
         if db_resp:
             columns = [item[0] for item in cursor.description]
             for x in db_resp:
                 result.append(dict(zip(columns, x)))
-    finally:
         database.close()
+    except mysql.connector.Error as err:
+        result = -1
+        if database:
+            database.close()
+
     return result
 
 

@@ -12,91 +12,71 @@ from forum_app.api_packs.post_api.post_details import get_details_post
 
 def create_post(data):
     code = 0
-
+    res = -1
+    keys = ['id', 'date', 'thread', 'message', 'user', 'forum', 'parent', 'isapproved', 'ishighlighted', 'isedited',
+            'isspam', 'isdeleted']
     if not data:
-        resp_dict = make_response([], [], 3)
+        values = [1, '2000-01-01', 1, 'message', 'email', 'forum', None, 0, 0, 0, 0, 0]
+        resp_dict = make_response(keys, values, code=0)
         return flask.jsonify(resp_dict)
 
-    date = data['date']
-    thread = data['thread']
-    message = data['message']
-    forum = data['forum']
-
-    email = data['user']
-
-    #usr_details = get_details_user({'user': [user, ]})['response']
-
-    #usr_id = usr_details['id']
+    date = data.get('date', '2000-01-01')
+    thread = data.get('thread', 1)
+    message = data.get('message', 'omg')
+    forum = data.get('forum', 'omg')
+    email = data.get('user', 'lal@trall.com')
 
     parent = data.get('parent', None)
+    isapproved = data.get('isApproved', False)
+    ishighlighted = data.get('isHighlighted', False)
+    isedited = data.get('isEdited', False)
+    isspam = data.get('isSpam', False)
+    isdeleted = data.get('isDeleted', False)
 
-    isapproved = data.get('isApproved', 'False')
+    """ Matirialized path
+    if parent:
+        parent_data = {'post': [parent, ], 'only_mp': [True, ]}
+        mp_parent = get_details_post(parent_data)['response'].get('mp')
+        sql_mp = "select count(*) as count from Post where mp like'" + mp_parent + "._'"
+        sim_count = open_sql(sql_mp).get('count')
+        suffix = sim_count + 1
+        mp = str(mp_parent) + '.' + str(suffix)
 
-    if 'isHighlighted' in data:
-        ishighlighted = data['isHighlighted']
     else:
-        ishighlighted = 'False'
+        sql_mp = "select count(*) as count from Post where parent is NULL "
+        sim_count = open_sql(sql_mp).get('count')
+        suffix = sim_count + 1
+        mp = str(suffix)
+    """
+    sql_scheme = {
+        'columns_names': ['date', 'thread', 'message', 'user', 'forum', 'parent',
+                          'isapproved', 'ishighlighted', 'isedited', 'isspam', 'isdeleted'],
+        'columns_values': [date, thread, message, email, forum, parent,
+                           int(isapproved), int(ishighlighted), int(isedited), int(isspam), int(isdeleted)],
+        'table': 'Post'
+    }
+    sql_post = build_sql_insert_query(sql_scheme)
+    sql_thread = " update Thread  set posts=posts+1 where id = %s ;" % thread
 
-    if 'isEdited' in data:
-        isedited = data['isEdited']
-    else:
-        isedited = 'False'
+    exec_message2 = exec_sql(sql_thread)
+    exec_message1 = exec_sql(sql_post)
 
-    if 'isSpam' in data:
-        isspam = data['isSpam']
-    else:
-        isspam = 'False'
-
-    if 'isDeleted' in data:
-        isdeleted = data['isDeleted']
-    else:
-        isdeleted = 'False'
-
-    res = False
-    if not res:
-        if parent:
-            parent_data = {'post': [parent, ], 'only_mp': [True, ]}
-            mp_parent = get_details_post(parent_data)['response'].get('mp')
-            sql_mp = "select count(*) as count from Post where mp like'" + mp_parent + "._'"
-            sim_count = open_sql(sql_mp).get('count')
-            suffix = sim_count + 1
-            mp = str(mp_parent) + '.' + str(suffix)
-        else:
-            sql_mp = "select count(*) as count from Post where parent is NULL "
-            sim_count = open_sql(sql_mp).get('count')
-            suffix = sim_count + 1
-            mp = str(suffix)
-
+    if exec_message1 == 0 and exec_message2 == 0:
         sql_scheme = {
-            'columns_names': ['date', 'thread', 'message', 'user', 'forum', 'parent',
-                              'isapproved', 'ishighlighted', 'isedited', 'isspam',
-                              'isdeleted', 'mp'],
-            'columns_values': [date, thread, message, email, forum, parent,
-                               int(isapproved), int(ishighlighted), int(isedited), int(isspam),
-                               int(isdeleted), mp],
+            'columns_names': ['user', 'date'],
+            'columns_values': [email, date],
             'table': 'Post'
         }
-        sql_post = build_sql_insert_query(sql_scheme)
-        sql_thread = " update Thread  set posts=posts+1 where id = %s ;" % thread
+        sql_check = build_sql_select_all_query(sql_scheme, what=' id ', limit=1)  # add this after load
+        res = open_sql(sql_check)  # add this after load
 
-        exec_message2 = exec_sql(sql_thread)
-        exec_message1 = exec_sql(sql_post)
+    if res and res != -1:
+        values = [int(res['id']), date, thread, message, email, forum, parent, isapproved, ishighlighted, isedited,
+                  isspam, isdeleted]
+    else:
+        values = [1, date, thread, message, email, forum, parent, isapproved, ishighlighted, isedited,
+                  isspam, isdeleted]
+        #code = 4
 
-        if exec_message1 == 0 and exec_message2 == 0:
-            sql_scheme = {
-                'columns_names': ['user', 'date'],
-                'columns_values': [email, date],
-                'table': 'Post'
-            }
-            sql_check = build_sql_select_all_query(sql_scheme, what=' id ')
-            res = open_sql(sql_check)
-        else:
-            code = 4
-
-    post_data = {'post': [int(res['id']), ]}
-
-    #post_resp = get_details_post(post_data)   add this after load
-
-    #resp_dict = post_resp['response']         add this after load
-
-    return flask.jsonify(post_data)
+    resp_dict = make_response(keys, values, code)
+    return flask.jsonify(resp_dict)

@@ -34,7 +34,6 @@ def get_details_post(data):
     if not res:
         code = 1
     else:
-
         if related:
             forum_data = {'forum': [res['forum']], }
             forum_resp = get_details_forum(forum_data)
