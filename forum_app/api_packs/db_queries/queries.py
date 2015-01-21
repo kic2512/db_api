@@ -5,7 +5,6 @@ from forum_app.settings import DB
 
 
 def exec_sql(sql, multi=False):
-    result = None
     database = None
     try:
         database = mysql.connector.connect(user=DB['USER'], host=DB['HOST'], passwd=DB['PASSWORD'], db=DB['NAME'],
@@ -14,12 +13,13 @@ def exec_sql(sql, multi=False):
         cursor = database.cursor()
         if not multi:
             cursor.execute(sql)
-            result = 0
+            result = cursor.lastrowid
         else:
             cursor.execute("START TRANSACTION")
             for s in sql:
                 cursor.execute(s)
             cursor.execute("COMMIT")
+            result = cursor.lastrowid
 
         database.commit()
         database.close()

@@ -53,7 +53,7 @@ def follow_user(data):
         sql = build_sql_insert_query(sql_scheme_follow)
         exec_message = exec_sql(sql)
 
-        if exec_message != 0:
+        if exec_message < 0:
             #code = 4
             a = 0
 

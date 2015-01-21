@@ -10,8 +10,9 @@ from forum_app.api_packs.make_response.make_response import make_response
 def create_thread(data):
     code = 0
     keys = ['id', 'forum', 'title', 'isClosed', 'user', 'date', 'message', 'slug', 'isDeleted']
+    values = [1, 'forum', 'title', 'isclosed', 'email', 'date', 'message', 'slug', 'isdeleted']
+
     if not data:
-        values = [1, 'forum', 'title', 'isclosed', 'email', 'date', 'message', 'slug', 'isdeleted']
         resp_dict = make_response(keys, values, code=0, sql='Thread: Data not found')
         return flask.jsonify(resp_dict)
 
@@ -43,8 +44,8 @@ def create_thread(data):
         sql = build_sql_insert_query(sql_scheme)
         exec_message = exec_sql(sql)
 
-        if exec_message == 0:
-            res = open_sql(sql_check)
+        if exec_message >= 0:
+            values = [exec_message, forum, title, isclosed, email, date, message, slug, isdeleted]
         else:
             #code = 4
             a = 0
@@ -52,11 +53,6 @@ def create_thread(data):
             #!values = [res['id'], str(res['date']), res['forum'], bool(res['isClosed']), bool(res['isDeleted']),
             #  res['message'],
             # res['slug'], res['title'], res['user']]
-    if res and res != -1:
-        values = [res['id'], forum, title, isclosed, email, date, message, slug, isdeleted]
-    else:
-        values = [1, forum, title, isclosed, email, date, message, slug, isdeleted]
-        #code = 4
 
     resp_dict = make_response(keys, values, code, sql_check)
     return flask.jsonify(resp_dict)

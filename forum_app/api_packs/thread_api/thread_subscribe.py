@@ -38,12 +38,10 @@ def subscribe_thread(data):
         sql = build_sql_insert_query(sql_scheme)
         exec_message = exec_sql(sql)
 
-        if exec_message == 0:
-            res = open_sql(sql_check)
+        if exec_message >= 0:
+            values = [exec_message, thread_id, email]
         else:
             code = 0  # 4
-    if res and res != -1:
-        values = [res['id'], thread_id, email]
 
     resp_dict = make_response(keys, values, code)
 
