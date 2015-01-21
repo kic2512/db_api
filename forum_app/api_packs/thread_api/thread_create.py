@@ -32,8 +32,8 @@ def create_thread(data):
 
     sql_check = build_sql_select_all_query(sql_scheme, what=' id ', limit=1)
 
-    res = open_sql(sql_check)  # check if exists
-    #res = False
+    #res = open_sql(sql_check)  # check if exists
+    res = False
     if not res:
         sql_scheme = {
             'columns_names': ['forum', 'title', 'isClosed', 'user', 'date', 'message', 'slug', 'isDeleted'],

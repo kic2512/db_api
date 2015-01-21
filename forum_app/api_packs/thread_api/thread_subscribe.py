@@ -9,8 +9,8 @@ from forum_app.api_packs.make_response.make_response import make_response
 
 def subscribe_thread(data):
     code = 0
-    keys = ['thread', 'user']
-    values = [1, 'lal@trall.com']
+    keys = ['id', 'thread', 'user']
+    values = [1, 1, 'lal@trall.com']
 
     if not data:
         resp_dict = make_response(keys, values, code=0)
@@ -41,10 +41,9 @@ def subscribe_thread(data):
         if exec_message == 0:
             res = open_sql(sql_check)
         else:
-            #code = 4
-            a = 0
+            code = 0  # 4
     if res and res != -1:
-        values = [res['thread'], res['user']]
+        values = [res['id'], thread_id, email]
 
     resp_dict = make_response(keys, values, code)
 

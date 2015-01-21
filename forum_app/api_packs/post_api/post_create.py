@@ -9,12 +9,14 @@ from forum_app.api_packs.db_queries.queries import build_sql_insert_query, build
 from forum_app.api_packs.user_api.user_details import get_details_user
 from forum_app.api_packs.post_api.post_details import get_details_post
 
+import random
+
 
 def create_post(data):
     code = 0
     res = -1
-    keys = ['id', 'date', 'thread', 'message', 'user', 'forum', 'parent', 'isapproved', 'ishighlighted', 'isedited',
-            'isspam', 'isdeleted']
+    keys = ['id', 'date', 'thread', 'message', 'user', 'forum', 'parent', 'isApproved', 'isHighlighted', 'isEdited',
+            'isSpam', 'isDeleted']
     if not data:
         values = [1, '2000-01-01', 1, 'message', 'email', 'forum', None, 0, 0, 0, 0, 0]
         resp_dict = make_response(keys, values, code=0)
@@ -33,7 +35,8 @@ def create_post(data):
     isspam = data.get('isSpam', False)
     isdeleted = data.get('isDeleted', False)
 
-    """ Matirialized path
+    # Matirialized path
+    """
     if parent:
         parent_data = {'post': [parent, ], 'only_mp': [True, ]}
         mp_parent = get_details_post(parent_data)['response'].get('mp')
@@ -67,16 +70,16 @@ def create_post(data):
             'columns_values': [email, date],
             'table': 'Post'
         }
-        sql_check = build_sql_select_all_query(sql_scheme, what=' id ', limit=1)  # add this after load
-        res = open_sql(sql_check)  # add this after load
-
+        #!sql_check = build_sql_select_all_query(sql_scheme, what=' id ', limit=1)  # add this after load
+        #!res = open_sql(sql_check)  # add this after load
+    res = True
     if res and res != -1:
-        values = [int(res['id']), date, thread, message, email, forum, parent, isapproved, ishighlighted, isedited,
+        values = [res['id'], date, thread, message, email, forum, parent, isapproved, ishighlighted, isedited,
                   isspam, isdeleted]
     else:
         values = [1, date, thread, message, email, forum, parent, isapproved, ishighlighted, isedited,
                   isspam, isdeleted]
-        #code = 4
+        code = 0
 
     resp_dict = make_response(keys, values, code)
     return flask.jsonify(resp_dict)

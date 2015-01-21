@@ -12,7 +12,7 @@ def create_forum(data):
     keys = ['id', 'name', 'short_name', 'user']
     if not data:
         values = [1, 'name', 'shn', 'email']
-        resp_dict = make_response(keys, values, code=0, sql='Forum: Data not found')
+        resp_dict = make_response(keys, values, code=4, sql='Forum: Data not found')
         return flask.jsonify(resp_dict)
 
     name = data['name'].encode("utf-8")
@@ -41,8 +41,7 @@ def create_forum(data):
         if exec_message == 0:
             res = open_sql(sql_check)
         else:
-            #code = 4
-            a = 0
+            code = 0#4
     if res and res != -1:
         values = [int(res['id']), name, shn, email]
     else:

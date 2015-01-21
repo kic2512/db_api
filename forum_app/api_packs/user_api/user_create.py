@@ -29,8 +29,8 @@ def create_user(data):
 
     sql_check = build_sql_select_all_query(sql_scheme, limit=1, what=' id ')
 
-    res = open_sql(sql_check)  # check if exists
-    #res = False
+    #res = open_sql(sql_check)  # check if exists
+    res = False
     if not res:
         sql_scheme = {
             'columns_names': ['username', 'about', 'name', 'email', 'isAnonymous'],

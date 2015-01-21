@@ -14,6 +14,7 @@ def exec_sql(sql, multi=False):
         cursor = database.cursor()
         if not multi:
             cursor.execute(sql)
+            result = 0
         else:
             cursor.execute("START TRANSACTION")
             for s in sql:
