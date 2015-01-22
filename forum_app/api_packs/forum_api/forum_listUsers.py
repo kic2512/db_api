@@ -41,9 +41,11 @@ def get_forum_users_list(data):
             'table': 'Post'
         }
 
-        larger = {'id': since}
-
-        sql = build_sql_select_all_query(sql_scheme, group='user', what='user')
+        if since != 0:
+            larger = {'id': since}
+            sql = build_sql_select_all_query(sql_scheme, group='user', what='user', larger=larger)
+        else:
+            sql = build_sql_select_all_query(sql_scheme, group='user', what='user')
 
         posts_list = open_sql_all(sql)
         mails = []

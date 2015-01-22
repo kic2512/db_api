@@ -44,10 +44,11 @@ def get_forum_threads_list(data):
             'columns_values': [forum_sh_name],
             'table': 'Thread'
         }
-
-        larger = {'date': since}
-
-        sql = build_sql_select_all_query(sql_scheme, is_desc=is_desc, limit=limit, larger=larger, ord_by=' date ')
+        if since != 0:
+            larger = {'date': since}
+            sql = build_sql_select_all_query(sql_scheme, is_desc=is_desc, limit=limit, larger=larger, ord_by=' date ')
+        else:
+            sql = build_sql_select_all_query(sql_scheme, is_desc=is_desc, limit=limit, ord_by=' date ')
 
         thread_list = open_sql_all(sql)
 

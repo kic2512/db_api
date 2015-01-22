@@ -47,10 +47,11 @@ def get_post_list(data):
             'columns_values': [req_field['val']],
             'table': 'Post'
         }
-
-        larger = {'date': since}
-
-        sql = build_sql_select_all_query(sql_scheme, is_desc, limit, larger)
+        if since != 0:
+            larger = {'date': since}
+            sql = build_sql_select_all_query(sql_scheme, is_desc, limit, larger)
+        else:
+            sql = build_sql_select_all_query(sql_scheme, is_desc, limit)
 
         posts_list = open_sql_all(sql)
 

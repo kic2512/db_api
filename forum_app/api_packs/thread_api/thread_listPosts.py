@@ -44,8 +44,10 @@ def get_thread_list_posts(data):
             'columns_values': [thread_id],
             'table': 'Post'
         }
-
-        sql = build_sql_select_all_query(sql_scheme, is_desc=is_desc, limit=limit, larger=larger, what=' id,user ')
+        if since != 0:
+            sql = build_sql_select_all_query(sql_scheme, is_desc=is_desc, limit=limit, larger=larger, what=' id,user ')
+        else:
+            sql = build_sql_select_all_query(sql_scheme, is_desc=is_desc, limit=limit, what=' id,user ')
         posts_list = open_sql_all(sql)
 
     final_resp = []
