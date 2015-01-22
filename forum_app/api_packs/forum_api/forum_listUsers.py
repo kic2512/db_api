@@ -16,7 +16,7 @@ def get_forum_users_list(data):
 
     since = data.get('since_id', [0, ])[0]
 
-    limit = data.get('limit', [0, ])[0]
+    limit = data.get('limit', [1, ])[0]
 
     is_desc = 0
     order_by = data.get('order', 'desc')
@@ -28,24 +28,24 @@ def get_forum_users_list(data):
         'columns_values': [forum_sh_name],
         'table': 'Forum'
     }
-    sql_check = build_sql_select_all_query(sql_scheme)
+    #sql_check = build_sql_select_all_query(sql_scheme)
 
-    res = open_sql(sql_check)  # check if exists
+    # res = open_sql(sql_check)  # check if exists
 
+    res = True
     if not res:
         code = 2
     else:
         sql_scheme = {
             'columns_names': ['forum'],
-            'columns_values': [res['short_name']],
+            'columns_values': [forum_sh_name],
             'table': 'Post'
         }
-
         if since != 0:
             larger = {'id': since}
-            sql = build_sql_select_all_query(sql_scheme, group='user', what='user', larger=larger)
+            sql = build_sql_select_all_query(sql_scheme, group='user', what='user', larger=larger, limit=limit)
         else:
-            sql = build_sql_select_all_query(sql_scheme, group='user', what='user')
+            sql = build_sql_select_all_query(sql_scheme, group='user', what='user', limit=limit)
 
         posts_list = open_sql_all(sql)
         mails = []
@@ -59,9 +59,12 @@ def get_forum_users_list(data):
                 'columns_values': mails,
                 'table': 'User'
             }
+            if since != 0:
+                sql = build_sql_select_all_query(sql_scheme, larger={'id': since}, limit=limit, ord_by=' name ',
+                                                 is_desc=is_desc, in_set=True)
+            else:
+                sql = build_sql_select_all_query(sql_scheme, limit=limit, ord_by=' name ', is_desc=is_desc, in_set=True)
 
-            sql = build_sql_select_all_query(sql_scheme, larger={'id': since}, limit=limit, ord_by=' name ',
-                                             is_desc=is_desc, in_set=True)
             users_res = open_sql_all(sql)
 
     resp_list = []
@@ -69,12 +72,12 @@ def get_forum_users_list(data):
 
     if code == 0 and users_res:
         for res in users_res:
-            usr_details = get_details_user({'user': [res['email'], ]})
-            usr_details = usr_details['response']
-            res['subscriptions'] = usr_details['subscriptions']
-            res['followers'] = usr_details['followers']
-            res['following'] = usr_details['following']
+            #usr_details = get_details_user({'user': [res['email'], ]})
+            #usr_details = usr_details['response']
+            res['subscriptions'] = [] #usr_details['subscriptions']
+            res['followers'] = [] #usr_details['followers']
+            res['following'] = [] #usr_details['following']
             resp_list.append(res)
 
-        final_resp = {'code': code, 'response': resp_list}
+    final_resp = {'code': code, 'response': resp_list}
     return final_resp

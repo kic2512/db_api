@@ -32,10 +32,10 @@ def get_forum_threads_list(data):
         'table': 'Forum'
     }
 
-    sql_check = build_sql_select_all_query(sql_scheme)
+    #sql_check = build_sql_select_all_query(sql_scheme)
 
-    res = open_sql(sql_check)  # check if exists
-
+    #res = open_sql(sql_check)  # check if exists
+    res = True
     if not res:
         code = 5
     else:
