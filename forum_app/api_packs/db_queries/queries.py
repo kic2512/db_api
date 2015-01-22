@@ -96,7 +96,7 @@ def build_sql_update_query(sql_scheme):
     return 'update ' + sql_scheme['table'] + ' set ' + b + ' where ' + con_str
 
 
-def build_sql_select_all_query(sql_scheme, is_desc=0, limit=0, larger=None, group=None, what=' * ', ord_by=' ',
+def build_sql_select_all_query(sql_scheme, is_desc=0, limit=0, larger=None, group=None, what=' * ', ord_by='',
                                in_set=None):
 
     str_lim = ''
