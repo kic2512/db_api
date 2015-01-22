@@ -8,7 +8,7 @@ def exec_sql(sql, multi=False):
     database = None
     try:
         database = mysql.connector.connect(user=DB['USER'], host=DB['HOST'], passwd=DB['PASSWORD'], db=DB['NAME'],
-                                           charset='utf8', connection_timeout=15)
+                                           charset='utf8', connection_timeout=30)
 
         cursor = database.cursor()
         if not multi:
@@ -36,7 +36,7 @@ def open_sql(sql):
     database = None
     try:
         database = mysql.connector.connect(user=DB['USER'], host=DB['HOST'], passwd=DB['PASSWORD'], db=DB['NAME'],
-                                           charset='utf8', connection_timeout=15)
+                                           charset='utf8', connection_timeout=30)
 
         cursor = database.cursor()
         cursor.execute(sql)
@@ -58,7 +58,7 @@ def open_sql_all(sql):
     database = None
     try:
         database = mysql.connector.connect(user=DB['USER'], host=DB['HOST'], passwd=DB['PASSWORD'], db=DB['NAME'],
-                                           charset='utf8', connection_timeout=15)
+                                           charset='utf8', connection_timeout=30)
         cursor = database.cursor()
         cursor.execute(sql)
         db_resp = cursor.fetchall()
