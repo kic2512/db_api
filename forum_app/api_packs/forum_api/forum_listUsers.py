@@ -47,7 +47,11 @@ def get_forum_users_list(data):
         else:
             sql = build_sql_select_all_query(sql_scheme, group='user', what='user', limit=limit)
 
-        posts_list = open_sql_all(sql)
+        posts_list_dict = open_sql_all(sql, first=True, is_closing=False)
+        posts_list = posts_list_dict['result']
+        db = posts_list_dict['db']
+        crs = posts_list_dict['cursor']
+
         mails = []
 
         for x in posts_list:
@@ -65,7 +69,8 @@ def get_forum_users_list(data):
             else:
                 sql = build_sql_select_all_query(sql_scheme, limit=limit, ord_by=' name ', is_desc=is_desc, in_set=True)
 
-            users_res = open_sql_all(sql)
+            users_res_dict = open_sql_all(sql, first=False, is_closing=False, cursor=crs)
+            users_res = users_res_dict['result']
 
     resp_list = []
     final_resp = make_response(code=code)
@@ -79,5 +84,6 @@ def get_forum_users_list(data):
             res['following'] = [] #usr_details['following']
             resp_list.append(res)
 
+    db.close()
     final_resp = {'code': code, 'response': resp_list}
     return final_resp

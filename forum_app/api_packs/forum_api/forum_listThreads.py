@@ -50,7 +50,10 @@ def get_forum_threads_list(data):
         else:
             sql = build_sql_select_all_query(sql_scheme, is_desc=is_desc, limit=limit, ord_by=' date ')
 
-        thread_list = open_sql_all(sql)
+        thread_list_dict = open_sql_all(sql, first=True, is_closing=False)
+        thread_list = thread_list_dict['result']
+        db = thread_list_dict['db']
+        crs = thread_list_dict['cursor']
 
     resp_keys = ['id', 'date', 'forum', 'isClosed', 'isDeleted', 'message', 'slug', 'title', 'user']
 
@@ -59,17 +62,17 @@ def get_forum_threads_list(data):
 
     if code == 0 and thread_list:
         for res in thread_list:
-            thread_data = get_details_thread({'thread': [res['id'], ]})['response']
+            thread_data = get_details_thread({'thread': [res['id'], ], 'is_closing': [False, ], 'cursor': [crs, ]})['response']
             resp_dict.append(thread_data)
 
         if 'forum' in related:
             for x in resp_dict:
-                x['forum'] = get_details_forum({'forum': [x['forum'], ]})['response']
+                x['forum'] = get_details_forum({'forum': [x['forum'], ], 'is_closing': [False, ], 'cursor': [crs, ]})['response']
 
         if 'user' in related:
             for x in resp_dict:
-                x['user'] = get_details_user({'user': [x['user'], ]})['response']
+                x['user'] = get_details_user({'user': [x['user'], ], 'is_closing': [False, ], 'cursor': [crs, ]})['response']
 
         final_resp = {'code': code, 'response': resp_dict}
-
+    db.close()
     return final_resp
