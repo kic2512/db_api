@@ -39,7 +39,6 @@ def unsubscribe_thread(data):
         exec_sql(build_sql_update_query(sql_scheme), first=False, cursor=crs, is_closing=False)
 
         keys = ['thread', 'user']
-
         values = [res['thread'], res['user']]
 
     else:
