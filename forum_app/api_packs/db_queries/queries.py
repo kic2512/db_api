@@ -21,7 +21,7 @@ def exec_sql(sql, multi=False, first=True, cursor=False, is_closing=True):
                 cursor.execute(s)
             cursor.execute("COMMIT")
             result = cursor.lastrowid
-        if first:
+        if is_closing:
             database.commit()
             database.close()
     except mysql.connector.Error as err:
