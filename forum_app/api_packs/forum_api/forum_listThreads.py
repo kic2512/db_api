@@ -52,6 +52,8 @@ def get_forum_threads_list(data):
 
         thread_list_dict = open_sql_all(sql, first=True, is_closing=False)
         thread_list = thread_list_dict['result']
+        if thread_list == -1 or not thread_list:
+                return make_response([], [], code=4)
         db = thread_list_dict['db']
         crs = thread_list_dict['cursor']
 

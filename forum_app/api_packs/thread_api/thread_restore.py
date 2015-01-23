@@ -53,7 +53,6 @@ def restore_thread(data):
 
         sql1 = 'update Thread set  posts=%s , isDeleted=0  where  id = %s' % (posts_count, thread)
         exec_sql(sql1, first=False, cursor=crs, is_closing=False)
-
         sql_scheme_post_up = {
             'columns_names': ['isDeleted'],
             'columns_values': [0],

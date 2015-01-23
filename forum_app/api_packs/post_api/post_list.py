@@ -37,7 +37,13 @@ def get_post_list(data):
     }
     sql_check = build_sql_select_all_query(sql_scheme)
 
-    res = open_sql(sql_check)  # check if exists
+    res_dict = open_sql_all(sql_check, first=True, is_closing=False)  # check if exists
+    res = res_dict['result'][0]
+    if res == -1 or not res:
+        return make_response([], [], code=4)
+
+    db = res_dict['db']
+    crs = res_dict['cursor']
 
     if not res:
         code = 2
@@ -53,7 +59,9 @@ def get_post_list(data):
         else:
             sql = build_sql_select_all_query(sql_scheme, is_desc, limit)
 
-        posts_list = open_sql_all(sql)
+        posts_list = open_sql_all(sql, first=False, cursor=crs, is_closing=False)['result']
+        if posts_list == -1 or not posts_list:
+            return make_response([], [], code=4)
 
     resp_keys = ['date', 'forum', 'id', 'isApproved', 'isDeleted', 'isEdited', 'isHighlighted', 'isSpam', 'message',
                  'parent', 'thread', 'user', 'likes', 'dislikes', 'points']
@@ -69,4 +77,5 @@ def get_post_list(data):
             resp_dict.append(make_response(resp_keys, resp_values, code)['response'])
         final_resp = {'code': code, 'response': resp_dict}
 
+    db.close()
     return final_resp

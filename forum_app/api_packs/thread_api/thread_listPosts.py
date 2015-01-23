@@ -34,7 +34,10 @@ def get_thread_list_posts(data):
     }
     sql_check = build_sql_select_all_query(sql_scheme, what=' id ')
 
-    res = open_sql(sql_check)  # check if exists
+    res_dict = open_sql(sql_check, first=True, is_closing=False)  # check if exists
+    res = res_dict['result']
+    db = res_dict['db']
+    crs = res_dict['cursor']
 
     if not res:
         code = 2
@@ -48,16 +51,17 @@ def get_thread_list_posts(data):
             sql = build_sql_select_all_query(sql_scheme, is_desc=is_desc, limit=limit, larger=larger, what=' id,user ')
         else:
             sql = build_sql_select_all_query(sql_scheme, is_desc=is_desc, limit=limit, what=' id,user ')
-        posts_list = open_sql_all(sql)
+        posts_list = open_sql_all(sql, first=False, cursor=crs, is_closing=False)
 
     final_resp = []
 
     if code == 0 and posts_list:
         for res in posts_list:
-            post_data = {'post': [res['id'], ]}
+            post_data = {'post': [res['id'], ], 'is_closing': [False, ], 'cursor': [crs, ]}
             post_resp = get_details_post(post_data)['response']
             final_resp.append(post_resp)
 
     out_dict = {'code': code, 'response': final_resp}
 
+    db.close()
     return out_dict

@@ -49,6 +49,10 @@ def get_forum_users_list(data):
 
         posts_list_dict = open_sql_all(sql, first=True, is_closing=False)
         posts_list = posts_list_dict['result']
+
+        if posts_list == -1 or not posts_list:
+            return make_response([], [], code=4)
+
         db = posts_list_dict['db']
         crs = posts_list_dict['cursor']
 
@@ -71,6 +75,8 @@ def get_forum_users_list(data):
 
             users_res_dict = open_sql_all(sql, first=False, is_closing=False, cursor=crs)
             users_res = users_res_dict['result']
+            if users_res == -1 and not users_res:
+                return make_response([], [], code=4)
 
     resp_list = []
     final_resp = make_response(code=code)
