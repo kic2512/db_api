@@ -21,14 +21,19 @@ def get_details_forum(data):
         'table': 'Forum'
     }
 
-    sql_check = build_sql_select_all_query(sql_scheme)
+    is_closing = data.get('is_closing', [1, ])[0]
+    cursor = data.get('cursor', [1, ])[0]
 
-    res = open_sql(sql_check)  # check if exists
+    sql_check = build_sql_select_all_query(sql_scheme)
+    if is_closing == 1 and cursor == 1:
+        res = open_sql(sql_check)  # check if exists
+    else:
+        res = open_sql(sql_check, first=False, is_closing=False, cursor=cursor)['result']
 
     if not res:
         code = 2
     else:
-        if related:
+        if related and cursor == 1:
             user_data = {'user': [res['user'], ]}
             user_resp = get_details_user(user_data)
             res['user'] = user_resp['response']

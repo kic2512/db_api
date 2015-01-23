@@ -30,8 +30,15 @@ def get_details_user(data, by_id=False):
         'table': 'User'
     }
 
+    is_closing = data.get('is_closing', [1, ])[0]
+    cursor = data.get('cursor', [1, ])[0]
+
     sql_check = build_sql_select_all_query(sql_scheme)
-    res = open_sql(sql_check)  # check if exists
+
+    if is_closing == 1 and cursor == 1:
+        res = open_sql(sql_check)  # check if exists
+    else:
+        res = open_sql(sql_check, first=False, is_closing=False, cursor=cursor)['result']
 
     if not res:
         code = 1
@@ -47,22 +54,21 @@ def get_details_user(data, by_id=False):
             'columns_values': [res['email'], 0],
             'table': 'Followers'
         }
+        if cursor == 1:
+            sql_get_followers_usr1 = build_sql_select_all_query(sql_scheme_get_followers, what='follower')
+            sql_get_following_usr1 = build_sql_select_all_query(sql_scheme_get_following, what='followee')
 
-        sql_get_followers_usr1 = build_sql_select_all_query(sql_scheme_get_followers, what='follower')
+            followers = open_sql_all(sql_get_followers_usr1)
+            following = open_sql_all(sql_get_following_usr1)
 
-        sql_get_following_usr1 = build_sql_select_all_query(sql_scheme_get_following, what='followee')
+            sql_scheme_get_subscriptions = {
+                'columns_names': ['user', 'isDeleted'],
+                'columns_values': [res['email'], 0],
+                'table': 'Subscribe'
+            }
+            sql_get_subscriptions = build_sql_select_all_query(sql_scheme_get_subscriptions, what=' thread ')
 
-        followers = open_sql_all(sql_get_followers_usr1)
-        following = open_sql_all(sql_get_following_usr1)
-
-        sql_scheme_get_subscriptions = {
-            'columns_names': ['user', 'isDeleted'],
-            'columns_values': [res['email'], 0],
-            'table': 'Subscribe'
-        }
-        sql_get_subscriptions = build_sql_select_all_query(sql_scheme_get_subscriptions, what=' thread ')
-
-        subscriptions = open_sql_all(sql_get_subscriptions)
+            subscriptions = open_sql_all(sql_get_subscriptions)
 
         followers_list = []
         following_list = []

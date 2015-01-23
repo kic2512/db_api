@@ -31,35 +31,41 @@ def exec_sql(sql, multi=False):
     return result
 
 
-def open_sql(sql):
+def open_sql(sql, first=True, cursor=False, is_closing=True):
     result = None
     database = None
     try:
-        database = mysql.connector.connect(user=DB['USER'], host=DB['HOST'], passwd=DB['PASSWORD'], db=DB['NAME'],
-                                           charset='utf8', connection_timeout=30)
+        if first:
+            database = mysql.connector.connect(user=DB['USER'], host=DB['HOST'], passwd=DB['PASSWORD'], db=DB['NAME'],
+                                               charset='utf8', connection_timeout=30)
+            cursor = database.cursor()
 
-        cursor = database.cursor()
         cursor.execute(sql)
         db_resp = cursor.fetchall()
 
         if db_resp:
             columns = [item[0] for item in cursor.description]
             result = dict(zip(columns, db_resp[0]))
-        database.close()
+        if is_closing:
+            database.close()
     except mysql.connector.Error as err:
         result = -1
-        if database:
+        if database and is_closing:
             database.close()
+    if not is_closing:
+        result = {'result': result, 'cursor': cursor}
     return result
 
 
-def open_sql_all(sql):
+def open_sql_all(sql, first=True, cursor=False, is_closing=True):
     result = []
     database = None
     try:
-        database = mysql.connector.connect(user=DB['USER'], host=DB['HOST'], passwd=DB['PASSWORD'], db=DB['NAME'],
-                                           charset='utf8', connection_timeout=30)
-        cursor = database.cursor()
+        if first:
+            database = mysql.connector.connect(user=DB['USER'], host=DB['HOST'], passwd=DB['PASSWORD'], db=DB['NAME'],
+                                               charset='utf8', connection_timeout=30)
+            cursor = database.cursor()
+
         cursor.execute(sql)
         db_resp = cursor.fetchall()
 
@@ -67,12 +73,14 @@ def open_sql_all(sql):
             columns = [item[0] for item in cursor.description]
             for x in db_resp:
                 result.append(dict(zip(columns, x)))
-        database.close()
+        if is_closing:
+            database.close()
     except mysql.connector.Error as err:
         result = -1
-        if database:
+        if database and is_closing:
             database.close()
-
+    if not is_closing:
+        result = {'result': result, 'cursor': cursor, 'db': database}
     return result
 
 
@@ -98,7 +106,6 @@ def build_sql_update_query(sql_scheme):
 
 def build_sql_select_all_query(sql_scheme, is_desc=0, limit=0, larger=None, group=None, what=' * ', ord_by='',
                                in_set=None):
-
     str_lim = ''
     c = ''
     str_by = ''
@@ -107,7 +114,7 @@ def build_sql_select_all_query(sql_scheme, is_desc=0, limit=0, larger=None, grou
         str_by = ' order by ' + ord_by
     str_group = ''
     if is_desc and ord_by != '':
-        #desc = ' desc '
+        # desc = ' desc '
         str_by += ' desc '
     if limit:
         str_lim = " limit  %s " % limit

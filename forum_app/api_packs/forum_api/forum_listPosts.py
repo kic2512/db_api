@@ -31,8 +31,7 @@ def get_forum_posts_list(data):
         'columns_values': [forum_sh_name],
         'table': 'Forum'
     }
-
-    sql_check = build_sql_select_all_query(sql_scheme)
+    # sql_check = build_sql_select_all_query(sql_scheme)
 
     #res = open_sql(sql_check)  # check if exists
     res = True
@@ -50,7 +49,10 @@ def get_forum_posts_list(data):
         else:
             sql = build_sql_select_all_query(sql_scheme, is_desc, limit)
 
-        posts_list = open_sql_all(sql)
+        posts_list_dict = open_sql_all(sql, first=True, is_closing=False)
+        posts_list = posts_list_dict['result']
+        db = posts_list_dict['db']
+        crs = posts_list_dict['cursor']
 
     resp_keys = ['date', 'forum', 'id', 'isApproved', 'isDeleted', 'isEdited', 'isHighlighted', 'isSpam', 'message',
                  'parent', 'thread', 'user', 'likes', 'dislikes', 'points']
@@ -65,19 +67,19 @@ def get_forum_posts_list(data):
                            res['parent'], res['thread'], res['user'], res['likes'], res['dislikes'],
                            res['points']]
             resp_dict.append(make_response(resp_keys, resp_values, code)['response'])
-
         if 'thread' in related:
             for x in resp_dict:
-                x['thread'] = get_details_thread({'thread': [x['thread'], ]})['response']
+                x['thread'] = get_details_thread({'thread': [x['thread'], ], 'is_closing': [False, ], 'cursor': [crs, ]})['response']
 
         if 'forum' in related:
             for x in resp_dict:
-                x['forum'] = get_details_forum({'forum': [x['forum'], ]})['response']
+                x['forum'] = get_details_forum({'forum': [x['forum'], ], 'is_closing': [False, ], 'cursor': [crs, ]})['response']
 
         if 'user' in related:
             for x in resp_dict:
-                x['user'] = get_details_user({'user': [x['user'], ]})['response']
+                x['user'] = get_details_user({'user': [x['user'], ], 'is_closing': [False, ], 'cursor': [crs, ]})['response']
 
         final_resp = {'code': code, 'response': resp_dict}
 
+    db.close()
     return final_resp

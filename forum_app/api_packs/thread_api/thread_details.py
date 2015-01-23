@@ -14,7 +14,6 @@ def get_details_thread(data):
     values = []
 
     thread_id = data.get('thread', None)[0]
-
     related = data.get('related', None)
     if related and 'thread' in related:
         code = 3
@@ -25,14 +24,20 @@ def get_details_thread(data):
         'table': 'Thread'
     }
 
+    is_closing = data.get('is_closing', [1, ])[0]
+    cursor = data.get('cursor', [1, ])[0]
+
     sql_check = build_sql_select_all_query(sql_scheme)
 
-    res = open_sql(sql_check)  # check if exists
+    if is_closing == 1 and cursor == 1:
+        res = open_sql(sql_check)  # check if exists
+    else:
+        res = open_sql(sql_check, first=False, is_closing=False, cursor=cursor)['result']
 
     if not res:
         code = 2
     else:
-        if related:
+        if related and cursor == 1:
             forum_data = {'forum': [res['forum']], }
             forum_resp = get_details_forum(forum_data)
             res['forum'] = forum_resp['response']
