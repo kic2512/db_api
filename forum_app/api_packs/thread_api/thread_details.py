@@ -12,6 +12,9 @@ def get_details_thread(data):
     code = 0
     keys = []
     values = []
+    if not data:
+        resp_dict = make_response(keys, values, code=4)
+        return flask.jsonify(resp_dict)
 
     thread_id = data.get('thread', None)[0]
     related = data.get('related', None)

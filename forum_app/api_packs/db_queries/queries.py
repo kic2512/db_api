@@ -4,13 +4,14 @@ import mysql.connector
 from forum_app.settings import DB
 
 
-def exec_sql(sql, multi=False):
+def exec_sql(sql, multi=False, first=True, cursor=False, is_closing=True):
     database = None
     try:
-        database = mysql.connector.connect(user=DB['USER'], host=DB['HOST'], passwd=DB['PASSWORD'], db=DB['NAME'],
-                                           charset='utf8', connection_timeout=30)
+        if first:
+            database = mysql.connector.connect(user=DB['USER'], host=DB['HOST'], passwd=DB['PASSWORD'], db=DB['NAME'],
+                                               charset='utf8', connection_timeout=30)
+            cursor = database.cursor()
 
-        cursor = database.cursor()
         if not multi:
             cursor.execute(sql)
             result = cursor.lastrowid
@@ -20,14 +21,13 @@ def exec_sql(sql, multi=False):
                 cursor.execute(s)
             cursor.execute("COMMIT")
             result = cursor.lastrowid
-
-        database.commit()
-        database.close()
+        if first:
+            database.commit()
+            database.close()
     except mysql.connector.Error as err:
         result = -1
-        if database:
+        if database and is_closing:
             database.close()
-
     return result
 
 

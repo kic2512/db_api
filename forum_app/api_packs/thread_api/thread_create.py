@@ -13,7 +13,7 @@ def create_thread(data):
     values = [1, 'forum', 'title', 'isclosed', 'email', 'date', 'message', 'slug', 'isdeleted']
 
     if not data:
-        resp_dict = make_response(keys, values, code=0, sql='Thread: Data not found')
+        resp_dict = make_response(keys, values, code=0)
         return flask.jsonify(resp_dict)
 
     forum = data.get('forum', None)
