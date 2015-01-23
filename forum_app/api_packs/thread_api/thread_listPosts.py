@@ -34,8 +34,9 @@ def get_thread_list_posts(data):
     }
     sql_check = build_sql_select_all_query(sql_scheme, what=' id ')
 
-    res_dict = open_sql(sql_check, first=True, is_closing=False)  # check if exists
-    res = res_dict['result']
+    res_dict = open_sql_all(sql_check, first=True, is_closing=False)  # check if exists
+
+    res = res_dict['result'][0]
     db = res_dict['db']
     crs = res_dict['cursor']
 
@@ -51,7 +52,8 @@ def get_thread_list_posts(data):
             sql = build_sql_select_all_query(sql_scheme, is_desc=is_desc, limit=limit, larger=larger, what=' id,user ')
         else:
             sql = build_sql_select_all_query(sql_scheme, is_desc=is_desc, limit=limit, what=' id,user ')
-        posts_list = open_sql_all(sql, first=False, cursor=crs, is_closing=False)
+
+        posts_list = open_sql_all(sql, first=False, cursor=crs, is_closing=False)['result']
 
     final_resp = []
 
