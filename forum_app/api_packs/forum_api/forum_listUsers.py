@@ -47,14 +47,14 @@ def get_forum_users_list(data):
         else:
             sql = build_sql_select_all_query(sql_scheme, group='user', what='user', limit=limit)
 
-        posts_list_dict = open_sql_all(sql, first=True, is_closing=False)
-        posts_list = posts_list_dict['result']
+        posts_list_dict = open_sql_all(sql)
+        posts_list = posts_list_dict
 
         if posts_list == -1 or not posts_list:
             return make_response([], [], code=4)
 
-        db = posts_list_dict['db']
-        crs = posts_list_dict['cursor']
+        #!db = posts_list_dict['db']
+        #!crs = posts_list_dict['cursor']
 
         mails = []
 
@@ -73,8 +73,8 @@ def get_forum_users_list(data):
             else:
                 sql = build_sql_select_all_query(sql_scheme, limit=limit, ord_by=' name ', is_desc=is_desc, in_set=True)
 
-            users_res_dict = open_sql_all(sql, first=False, is_closing=False, cursor=crs)
-            users_res = users_res_dict['result']
+            users_res_dict = open_sql_all(sql)#!, first=False, is_closing=False, cursor=crs)
+            users_res = users_res_dict#!['result']
             if users_res == -1 and not users_res:
                 return make_response([], [], code=4)
 
@@ -90,6 +90,6 @@ def get_forum_users_list(data):
             res['following'] = [] #usr_details['following']
             resp_list.append(res)
 
-    db.close()
+    #!db.close()
     final_resp = {'code': code, 'response': resp_list}
     return final_resp
